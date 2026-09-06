@@ -1,0 +1,520 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pizza Lab - Live Order Tracking | Karor Lal Eason</title>
+
+  <!-- Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    .track-wrapper {
+      max-width: 860px;
+      margin: 40px auto;
+      padding: 0 20px;
+    }
+
+    .track-search-card {
+      background: var(--bg-glass);
+      backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: 20px;
+      padding: 28px;
+      margin-bottom: 28px;
+      text-align: center;
+    }
+
+    .track-input-row {
+      display: flex;
+      gap: 10px;
+      max-width: 520px;
+      margin: 18px auto 0;
+    }
+
+    .track-result-card {
+      background: var(--bg-glass);
+      backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: 24px;
+      padding: 32px;
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+
+    .track-header-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 20px;
+      margin-bottom: 28px;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    /* Big Timeline Visual */
+    .milestone-stepper {
+      position: relative;
+      display: flex;
+      justify-content: space-between;
+      margin: 40px 10px 36px;
+    }
+
+    .milestone-stepper::before {
+      content: '';
+      position: absolute;
+      top: 24px;
+      left: 30px;
+      right: 30px;
+      height: 4px;
+      background: rgba(255, 255, 255, 0.08);
+      z-index: 1;
+    }
+
+    .milestone-progress-line {
+      position: absolute;
+      top: 24px;
+      left: 30px;
+      height: 4px;
+      background: linear-gradient(90deg, var(--accent), #ffaa00);
+      z-index: 2;
+      transition: width 0.5s ease;
+      width: 0%;
+    }
+
+    .milestone-node {
+      position: relative;
+      z-index: 3;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      width: 90px;
+    }
+
+    .milestone-icon {
+      width: 48px;
+      height: 48px;
+      border-radius: 50%;
+      background: #10141e;
+      border: 2px solid var(--glass-border);
+      color: var(--text-muted);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 18px;
+      font-weight: 800;
+      transition: all 0.3s;
+    }
+
+    .milestone-node.done .milestone-icon {
+      border-color: var(--accent);
+      background: var(--accent);
+      color: #fff;
+    }
+
+    .milestone-node.active .milestone-icon {
+      border-color: #ffaa00;
+      background: rgba(255, 170, 0, 0.2);
+      color: #ffaa00;
+      box-shadow: 0 0 20px rgba(255, 170, 0, 0.4);
+      animation: pulse 1.8s infinite;
+    }
+
+    .milestone-label {
+      margin-top: 10px;
+      font-size: 12px;
+      font-weight: 700;
+      color: var(--text-muted);
+    }
+
+    .milestone-node.done .milestone-label,
+    .milestone-node.active .milestone-label {
+      color: #fff;
+    }
+
+    .info-summary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 20px;
+      margin-top: 28px;
+      padding-top: 24px;
+      border-top: 1px solid var(--glass-border);
+    }
+
+    .order-items-slip {
+      background: rgba(0, 0, 0, 0.25);
+      border-radius: 14px;
+      padding: 16px;
+      margin-top: 16px;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.08); }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    @media (max-width: 600px) {
+      .track-input-row { flex-direction: column; }
+      .milestone-stepper { margin: 30px 0; }
+      .milestone-label { font-size: 10px; }
+      .info-summary-grid { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Sticky Glass Header -->
+  <header>
+    <a href="index.html" class="brand-logo">
+      <div class="logo-badge">PIZZA LAB</div>
+    </a>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="track.html" class="active">Track Order</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <button class="hamburger-btn" onclick="toggleMobileNav()">☰</button>
+      <div class="cart-trigger" onclick="toggleCart()">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"></circle><circle cx="19" cy="20" r="1.5"></circle><path d="M2 3h3.2l2.3 11.2a1.8 1.8 0 0 0 1.8 1.4h9.4a1.8 1.8 0 0 0 1.8-1.4L22 6.5H6.2"></path></svg>
+        <div class="cart-badge" id="cart-count">0</div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Mobile Drawer Menu -->
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html">Home</a>
+    <a href="menu.html">Full Menu</a>
+    <a href="shop.html">Combos & Deals</a>
+    <a href="contact.html">Contact Us</a>
+    <a href="track.html">Track Order</a>
+  </div>
+
+  <main class="track-wrapper">
+    
+    <!-- Search / Input Card -->
+    <div class="track-search-card">
+      <h1 class="section-heading" style="font-size: 28px; margin-bottom: 6px;">Track Your Delivery</h1>
+      <p class="section-subtext" style="margin-bottom: 0;">Enter your Order ID (e.g., #PL-4821) or WhatsApp Phone Number to check live kitchen progress.</p>
+
+      <form onsubmit="handleTrackSearch(event)" class="track-input-row">
+        <input type="text" id="track-input" class="form-glow-control" placeholder="Order ID (e.g. #PL-1042) or Phone Number" required />
+        <button type="submit" class="btn-primary" style="white-space: nowrap; padding: 12px 24px;">Track Now</button>
+      </form>
+    </div>
+
+    <!-- Active Tracking Display -->
+    <div class="track-result-card" id="track-result-card">
+      
+      <div class="track-header-row">
+        <div>
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <h2 style="font-family: 'Titan One'; color: var(--accent); font-size: 24px; margin: 0;" id="t-display-id">#PL-0000</h2>
+            <span class="tracker-badge" id="t-display-status-badge" style="background: rgba(234,131,41,0.2); color: var(--accent); border: 1px solid var(--accent); border-radius: 6px; padding: 4px 10px; font-size: 11px; font-weight: 800;">RECEIVED</span>
+          </div>
+          <p style="color: var(--text-muted); font-size: 12px; margin: 4px 0 0 0;" id="t-display-date">Placed: Today at --:--</p>
+        </div>
+        <div style="text-align: right;">
+          <div style="font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase;">Estimated Arrival</div>
+          <div style="font-size: 20px; font-weight: 800; color: #fff;" id="t-display-eta">25 - 35 Mins</div>
+        </div>
+      </div>
+
+      <!-- Stepper Visual -->
+      <div class="milestone-stepper">
+        <div class="milestone-progress-line" id="milestone-line"></div>
+        
+        <div class="milestone-node done" id="m-step-1">
+          <div class="milestone-icon">✓</div>
+          <div class="milestone-label">Order Received</div>
+        </div>
+
+        <div class="milestone-node active" id="m-step-2">
+          <div class="milestone-icon">🔥</div>
+          <div class="milestone-label">Baking in Oven</div>
+        </div>
+
+        <div class="milestone-node" id="m-step-3">
+          <div class="milestone-icon">🛵</div>
+          <div class="milestone-label">Rider on Road</div>
+        </div>
+
+        <div class="milestone-node" id="m-step-4">
+          <div class="milestone-icon">🍕</div>
+          <div class="milestone-label">Delivered</div>
+        </div>
+      </div>
+
+      <!-- Information & Items Summary -->
+      <div class="info-summary-grid">
+        <div>
+          <h4 style="color: #fff; font-size: 14px; margin-bottom: 10px;">Delivery Details</h4>
+          <div style="font-size: 13px; color: var(--text-muted); line-height: 1.8;">
+            <div><strong>Customer:</strong> <span id="t-display-name" style="color: #fff;">--</span></div>
+            <div><strong>Contact:</strong> <span id="t-display-phone" style="color: #fff;">--</span></div>
+            <div><strong>Delivery Address:</strong> <span id="t-display-address" style="color: #fff;">--</span></div>
+            <div id="t-display-rider-gps" style="margin-top: 6px;"></div>
+          </div>
+        </div>
+
+        <div>
+          <h4 style="color: #fff; font-size: 14px; margin-bottom: 10px;">Payment & Invoice</h4>
+          <div style="font-size: 13px; color: var(--text-muted); line-height: 1.8;">
+            <div><strong>Payment Route:</strong> <span id="t-display-payment" style="color: #fff;">--</span></div>
+            <div><strong>Total Charge:</strong> <span id="t-display-total" style="color: var(--accent); font-weight: 800; font-size: 15px;">Rs. 0</span></div>
+            <div style="margin-top: 10px; display: flex; gap: 8px;">
+              <a href="tel:03080671101" class="btn-ticket" style="padding: 6px 12px; font-size: 11px;">📞 Call Kitchen</a>
+              <a href="https://wa.me/923080671101" target="_blank" class="btn-ticket" style="padding: 6px 12px; font-size: 11px; border-color: var(--whatsapp); color: var(--whatsapp);">💬 WhatsApp Support</a>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="order-items-slip">
+        <div style="font-size: 12px; font-weight: 700; color: var(--accent); text-transform: uppercase; margin-bottom: 8px;">Order Items Breakdown</div>
+        <div id="t-display-items-box"></div>
+      </div>
+
+    </div>
+
+    <!-- Not Found State -->
+    <div id="track-not-found" style="display: none; text-align: center; padding: 40px; background: var(--bg-glass); border-radius: 20px; border: 1px solid var(--glass-border);">
+      <div style="font-size: 36px; margin-bottom: 10px;">🔍</div>
+      <h3 style="color: #fff; margin-bottom: 6px;">No Active Order Found</h3>
+      <p style="color: var(--text-muted); font-size: 13px; max-width: 440px; margin: 0 auto 16px;">We could not locate an active order matching those details. Please double-check your Order ID or Phone Number.</p>
+      <a href="menu.html" class="btn-primary" style="display: inline-block;">Order Fresh Pizza Now &rarr;</a>
+    </div>
+
+  </main>
+
+  <!-- Multi-Step Cart Drawer for seamless ordering -->
+  <div class="cart-drawer" id="cart-drawer">
+    <div class="cart-drawer-header">
+      <h3>Your Order</h3>
+      <button class="modal-close" onclick="toggleCart()">&times;</button>
+    </div>
+    <div class="progress-steps">
+      <div class="progress-step active" id="node-step-1"><div class="step-bubble">1</div><span class="step-text">Review</span></div>
+      <div class="progress-step" id="node-step-2"><div class="step-bubble">2</div><span class="step-text">Details</span></div>
+      <div class="progress-step" id="node-step-3"><div class="step-bubble">3</div><span class="step-text">Payment</span></div>
+      <div class="progress-step" id="node-step-4"><div class="step-bubble">4</div><span class="step-text">Invoice</span></div>
+    </div>
+    <div class="cart-view-step active" id="view-step-1">
+      <div class="order-type-tabs">
+        <button class="type-tab active" id="btn-delivery" onclick="setOrderType('Delivery')">Delivery (Rs. 100)</button>
+        <button class="type-tab" id="btn-takeaway" onclick="setOrderType('Takeaway')">Takeaway</button>
+      </div>
+      <div class="cart-items-box" id="cart-items-container"></div>
+    </div>
+    <div class="cart-footer-controls">
+      <div class="cart-total-lines" id="cart-summary-breakdown">
+        <div style="display: flex; justify-content: space-between;"><span>Subtotal</span><span id="cart-subtotal">Rs. 0</span></div>
+        <div style="display: flex; justify-content: space-between;"><span>Delivery Fee</span><span id="cart-delivery-fee">Rs. 100</span></div>
+        <div class="cart-total-final"><span>Total Bill</span><span id="cart-total-val" style="color: var(--accent);">Rs. 0</span></div>
+      </div>
+      <div class="step-btns">
+        <button class="btn-primary" style="flex: 1;" onclick="nextStep()">Proceed to Details &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-msg" id="toast-notification">Notification</div>
+
+  <!-- Footer -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="logo-badge" style="display: inline-block; margin-bottom: 12px;">PIZZA LAB</div>
+        <p style="color: var(--text-muted); font-size: 12px; line-height: 1.7;">Culinary precision, fresh hand-tossed doughs, and molten cheese innovations in Karor Lal Eason.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="menu.html">Menu</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="track.html">Track Order</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Support & Orders</h4>
+        <ul>
+          <li style="color: var(--text-muted); font-size: 12px;">Karor Lal Eason, Punjab</li>
+          <li style="color: var(--text-muted); font-size: 12px;">0308-0671101</li>
+          <li style="color: var(--text-muted); font-size: 12px;">almasmahdi420@gmail.com</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Pizza Lab. All rights reserved.</span>
+      <span>Karor Lal Eason Branch</span>
+    </div>
+  </footer>
+
+  <script src="menu-data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    let activeTrackedOrderId = null;
+
+    function handleTrackSearch(e) {
+      if (e) e.preventDefault();
+      const input = document.getElementById('track-input').value.trim();
+      if (!input) return;
+      lookupOrder(input);
+    }
+
+    function lookupOrder(query) {
+      const allOrders = JSON.parse(localStorage.getItem('pizza_lab_all_orders') || '[]');
+      const lastOrder = JSON.parse(localStorage.getItem('pizza_lab_last_order') || 'null');
+
+      const normalizedQuery = query.toLowerCase().replace(/[^a-z0-9]/g, '');
+
+      // Find by orderId or phone
+      let matched = allOrders.find(o => {
+        const idMatch = (o.orderId || '').toLowerCase().replace(/[^a-z0-9]/g, '').includes(normalizedQuery);
+        const phoneMatch = (o.phone || '').replace(/[^0-9]/g, '').includes(normalizedQuery);
+        return idMatch || phoneMatch;
+      });
+
+      if (!matched && lastOrder) {
+        const lastIdMatch = (lastOrder.orderId || '').toLowerCase().replace(/[^a-z0-9]/g, '').includes(normalizedQuery);
+        const lastPhoneMatch = (lastOrder.phone || '').replace(/[^0-9]/g, '').includes(normalizedQuery);
+        if (lastIdMatch || lastPhoneMatch) matched = lastOrder;
+      }
+
+      const card = document.getElementById('track-result-card');
+      const notFound = document.getElementById('track-not-found');
+
+      if (matched) {
+        activeTrackedOrderId = matched.orderId;
+        renderTrackDetails(matched);
+        card.style.display = 'block';
+        notFound.style.display = 'none';
+      } else {
+        activeTrackedOrderId = null;
+        card.style.display = 'none';
+        notFound.style.display = 'block';
+      }
+    }
+
+    function renderTrackDetails(order) {
+      document.getElementById('t-display-id').innerText = order.orderId || '#PL-0000';
+      document.getElementById('t-display-date').innerText = `Placed: ${order.dateStr || 'Today'}`;
+      document.getElementById('t-display-name').innerText = order.name || 'Valued Customer';
+      document.getElementById('t-display-phone').innerText = order.phone || 'N/A';
+      document.getElementById('t-display-address').innerText = order.address || 'Self-Pickup';
+      document.getElementById('t-display-payment').innerText = order.selectedPayment || 'Cash on Delivery';
+      document.getElementById('t-display-total').innerText = `Rs. ${order.grandTotal || order.total || 0}`;
+
+      const gpsContainer = document.getElementById('t-display-rider-gps');
+      if (order.riderGps) {
+        gpsContainer.innerHTML = `<a href="${order.riderGps}" target="_blank" style="color: #25d366; font-size: 11.5px; text-decoration: none; font-weight: 700;">📍 Verified Rider Navigation Pin &rarr;</a>`;
+      } else {
+        gpsContainer.innerHTML = '';
+      }
+
+      // Items slip
+      const itemsBox = document.getElementById('t-display-items-box');
+      itemsBox.innerHTML = (order.cart || []).map(i => `
+        <div style="display: flex; justify-content: space-between; font-size: 12px; margin-bottom: 4px; color: #e2e8f0;">
+          <span>• <strong>${i.name}</strong> <span style="color: var(--text-muted); font-size: 11px;">(${i.variant})</span></span>
+          <span style="color: var(--accent); font-weight: 700;">Rs. ${i.price}</span>
+        </div>
+      `).join('');
+
+      // Status Stepper Visual
+      const status = order.status || 'Received';
+      const badge = document.getElementById('t-display-status-badge');
+      const eta = document.getElementById('t-display-eta');
+      const line = document.getElementById('milestone-line');
+
+      const s1 = document.getElementById('m-step-1');
+      const s2 = document.getElementById('m-step-2');
+      const s3 = document.getElementById('m-step-3');
+      const s4 = document.getElementById('m-step-4');
+
+      [s1, s2, s3, s4].forEach(s => { s.className = 'milestone-node'; });
+
+      if (status === 'Received') {
+        s1.className = 'milestone-node active';
+        line.style.width = '10%';
+        badge.innerText = '● RECEIVED';
+        badge.style.color = 'var(--accent)';
+        badge.style.borderColor = 'var(--accent)';
+        eta.innerText = '35 - 45 Mins';
+      } else if (status === 'In Oven') {
+        s1.className = 'milestone-node done';
+        s2.className = 'milestone-node active';
+        line.style.width = '40%';
+        badge.innerText = '🔥 IN STONE OVEN';
+        badge.style.color = '#ffaa00';
+        badge.style.borderColor = '#ffaa00';
+        eta.innerText = '20 - 30 Mins';
+      } else if (status === 'On Way') {
+        s1.className = 'milestone-node done';
+        s2.className = 'milestone-node done';
+        s3.className = 'milestone-node active';
+        line.style.width = '75%';
+        badge.innerText = '🛵 RIDER DISPATCHED';
+        badge.style.color = '#60a5fa';
+        badge.style.borderColor = '#60a5fa';
+        eta.innerText = '10 - 15 Mins';
+      } else if (status === 'Delivered') {
+        [s1, s2, s3, s4].forEach(s => { s.className = 'milestone-node done'; });
+        line.style.width = '100%';
+        badge.innerText = '✔ DELIVERED';
+        badge.style.color = 'var(--whatsapp)';
+        badge.style.borderColor = 'var(--whatsapp)';
+        eta.innerText = 'Delivered 🍕';
+      } else if (status === 'Cancelled') {
+        line.style.width = '0%';
+        badge.innerText = '✖ CANCELLED';
+        badge.style.color = '#ef4444';
+        badge.style.borderColor = '#ef4444';
+        eta.innerText = 'Cancelled';
+      }
+    }
+
+    // Auto-search via URL parameter ?id=... or fallback to last order
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      const queryId = urlParams.get('id');
+
+      if (queryId) {
+        document.getElementById('track-input').value = queryId;
+        lookupOrder(queryId);
+      } else {
+        const lastOrder = JSON.parse(localStorage.getItem('pizza_lab_last_order') || 'null');
+        if (lastOrder && lastOrder.orderId) {
+          document.getElementById('track-input').value = lastOrder.orderId;
+          lookupOrder(lastOrder.orderId);
+        }
+      }
+    });
+
+    // Real-time background sync when kitchen changes status
+    window.addEventListener('storage', (e) => {
+      if ((e.key === 'pizza_lab_all_orders' || e.key === 'pizza_lab_last_order') && activeTrackedOrderId) {
+        lookupOrder(activeTrackedOrderId);
+      }
+    });
+  </script>
+</body>
+</html>

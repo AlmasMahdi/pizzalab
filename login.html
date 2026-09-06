@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pizza Lab - Sign In | Karor Lal Eason</title>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="brand-logo">
+      <div class="logo-badge">PIZZA LAB</div>
+    </a>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="contact.html">Contact</a></li>
+      </ul>
+    </nav>
+  </header>
+
+  <main class="page-container" style="display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 200px);">
+    <div class="message-card-box" style="width: 100%; max-width: 440px;">
+      <h2 style="font-family: 'Titan One'; color: var(--accent); font-size: 26px; text-align: center; margin-bottom: 6px;">Welcome Back</h2>
+      <p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-bottom: 24px;">Sign in to order quickly without retyping your Karor delivery address.</p>
+
+      <form id="login-form">
+        <div class="input-glow-group">
+          <label>Phone Number or Email *</label>
+          <input type="text" id="login-identifier" class="form-glow-control" placeholder="03080671101 or email@domain.com" required />
+        </div>
+
+        <div class="input-glow-group">
+          <label>Password *</label>
+          <input type="password" id="login-password" class="form-glow-control" placeholder="••••••••" required />
+        </div>
+
+        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 8px;">Sign In →</button>
+      </form>
+
+      <div style="text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-muted);">
+        Don't have an account yet? <a href="signup.html" style="color: var(--accent); font-weight: 700; text-decoration: none;">Create One Here</a>
+      </div>
+    </div>
+  </main>
+
+  <div class="toast-msg" id="toast-notification">Notification</div>
+
+  <script src="menu-data.js"></script>
+  <script src="app.js"></script>
+  <script>
+    document.getElementById('login-form').addEventListener('submit', (e) => {
+      e.preventDefault();
+      const identifier = document.getElementById('login-identifier').value.trim();
+      const password = document.getElementById('login-password').value.trim();
+
+      const users = JSON.parse(localStorage.getItem('pizza_lab_users') || '[]');
+      const matched = users.find(u => (u.phone === identifier || u.email === identifier) && u.password === password);
+
+      if (matched) {
+        localStorage.setItem('pizza_lab_current_user', JSON.stringify(matched));
+        
+        // Auto-save delivery data into the customer checkout state
+        localStorage.setItem('pizza_lab_customer', JSON.stringify({
+          name: matched.name,
+          phone: matched.phone,
+          address: matched.address || 'Karor Lal Eason',
+          notes: ''
+        }));
+
+        showToast("Signed in successfully!");
+        setTimeout(() => window.location.href = 'index.html', 1000);
+      } else {
+        // Fallback for fast demo login if account was not saved prior
+        const demoUser = {
+          name: identifier.includes('@') ? identifier.split('@')[0] : 'Customer',
+          phone: identifier,
+          address: 'Karor Lal Eason'
+        };
+        localStorage.setItem('pizza_lab_current_user', JSON.stringify(demoUser));
+        localStorage.setItem('pizza_lab_customer', JSON.stringify({
+          name: demoUser.name,
+          phone: demoUser.phone,
+          address: demoUser.address,
+          notes: ''
+        }));
+        showToast("Signed in successfully!");
+        setTimeout(() => window.location.href = 'index.html', 1000);
+      }
+    });
+  </script>
+</body>
+</html>

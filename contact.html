@@ -1,0 +1,421 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pizza Lab - Contact Us | Karor Lal Eason</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="brand-logo">
+      <div class="logo-badge">PIZZA LAB</div>
+    </a>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="contact.html" class="active">Contact</a></li>
+        <li><a href="track.html">Track Order</a></li>
+        <li><a onclick="openFeedbackModal()">Feedback</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <div id="nav-auth-slot"><a href="login.html" class="btn-auth-nav">Sign In</a></div>
+      <button class="hamburger-btn" onclick="toggleMobileNav()">☰</button>
+      <div class="cart-trigger" onclick="toggleCart()">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"></circle><circle cx="19" cy="20" r="1.5"></circle><path d="M2 3h3.2l2.3 11.2a1.8 1.8 0 0 0 1.8 1.4h9.4a1.8 1.8 0 0 0 1.8-1.4L22 6.5H6.2"></path></svg>
+        <div class="cart-badge" id="cart-count">0</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html">Home</a>
+    <a href="menu.html">Full Menu</a>
+    <a href="about.html">About Us</a>
+    <a href="shop.html">Combos & Deals</a>
+    <a href="contact.html">Contact Us</a>
+    <a href="track.html">Track Order</a>
+    <a onclick="openFeedbackModal(); toggleMobileNav();">Feedback</a>
+    <a href="login.html">Sign In / Register</a>
+  </div>
+
+  <main class="page-container">
+    <div style="display: grid; grid-template-columns: 1fr 1.2fr; gap: 40px; align-items: flex-start;">
+      
+      <div>
+        <h2 class="section-heading">Connect With Pizza Lab</h2>
+        <p class="section-subtext">Have questions about party catering, bulk orders, or deliveries? Reach out to our kitchen counter directly.</p>
+
+        <div class="glass-panel" style="padding: 24px; display: flex; flex-direction: column; gap: 18px;">
+          
+          <div style="display: flex; gap: 14px; align-items: center;">
+            <div style="background: rgba(234, 131, 41, 0.12); border: 1px solid var(--glass-border); padding: 12px; border-radius: 12px; font-size: 18px;">📍</div>
+            <div>
+              <div style="font-weight: 700; color: #fff;">Kitchen Headquarters</div>
+              <div style="color: var(--text-muted); font-size: 12.5px; margin-top: 2px;">Karor Lal Eason, Punjab, Pakistan</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 14px; align-items: center;">
+            <div style="background: rgba(234, 131, 41, 0.12); border: 1px solid var(--glass-border); padding: 12px; border-radius: 12px; font-size: 18px;">📞</div>
+            <div>
+              <div style="font-weight: 700; color: #fff;">Order Line & WhatsApp</div>
+              <div style="color: var(--text-muted); font-size: 12.5px; margin-top: 2px;">0308-0671101</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 14px; align-items: center;">
+            <div style="background: rgba(234, 131, 41, 0.12); border: 1px solid var(--glass-border); padding: 12px; border-radius: 12px; font-size: 18px;">✉️</div>
+            <div>
+              <div style="font-weight: 700; color: #fff;">Email Address</div>
+              <div style="color: var(--text-muted); font-size: 12.5px; margin-top: 2px;">almasmahdi420@gmail.com</div>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 14px; align-items: center;">
+            <div style="background: rgba(234, 131, 41, 0.12); border: 1px solid var(--glass-border); padding: 12px; border-radius: 12px; font-size: 18px;">🕒</div>
+            <div>
+              <div style="font-weight: 700; color: #fff;">Operating Hours</div>
+              <div style="color: var(--text-muted); font-size: 12.5px; margin-top: 2px;">12:00 PM – 02:00 AM (Monday to Sunday)</div>
+            </div>
+          </div>
+
+        </div>
+
+        <div style="margin-top: 20px; border-radius: 20px; overflow: hidden; border: 1px solid var(--glass-border); background: var(--bg-glass);">
+          <iframe 
+            src="https://maps.google.com/maps?q=Karor%20Lal%20Eason&t=&z=14&ie=UTF8&iwloc=&output=embed" 
+            width="100%" 
+            height="260" 
+            style="border: 0; display: block; filter: invert(90%) hue-rotate(180deg);" 
+            allowfullscreen="" 
+            loading="lazy">
+          </iframe>
+          <div style="padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; border-top: 1px solid var(--glass-border);">
+            <span style="font-size: 12px; color: var(--text-muted);">Karor Lal Eason Main City</span>
+            <a href="https://www.google.com/maps/search/?api=1&query=Karor+Lal+Eason" target="_blank" style="color: var(--accent); font-size: 12px; font-weight: 700; text-decoration: none;">Open in Google Maps →</a>
+          </div>
+        </div>
+
+        <div style="margin-top: 16px;">
+          <a href="tel:03080671101" class="btn-primary" style="display: flex; align-items: center; justify-content: center; gap: 8px; width: 100%; text-align: center;">
+            <span>📞 Call Kitchen Counter Directly</span>
+          </a>
+        </div>
+      </div>
+
+      <div class="message-card-box">
+        <h3 style="font-family: 'Titan One'; color: var(--accent); font-size: 24px; margin-bottom: 6px;">Send Us a Message</h3>
+        <p style="color: var(--text-muted); font-size: 13px; margin-bottom: 24px;">Drop a line and our kitchen manager will follow up via call or WhatsApp.</p>
+
+        <form onsubmit="event.preventDefault(); showToast('Message dispatched to Pizza Lab kitchen!'); event.target.reset(); playSound();">
+          <div class="input-glow-group">
+            <label>Full Name *</label>
+            <input type="text" class="form-glow-control" placeholder="Muhammad Ali" required />
+          </div>
+
+          <div class="input-glow-group">
+            <label>Phone / WhatsApp Number *</label>
+            <input type="tel" class="form-glow-control" placeholder="03080671101" required />
+          </div>
+
+          <div class="input-glow-group">
+            <label>Subject / Topic</label>
+            <input type="text" class="form-glow-control" placeholder="Party Order / Catering / Feedback" required />
+          </div>
+
+          <div class="input-glow-group">
+            <label>Your Message *</label>
+            <textarea class="form-glow-control" style="height: 120px; resize: none;" placeholder="Write your message or inquiry here..." required></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width: 100%;">Dispatch Message →</button>
+        </form>
+      </div>
+
+    </div>
+  </main>
+
+  <div class="cart-drawer" id="cart-drawer">
+    <div class="cart-drawer-header">
+      <h3>Your Order</h3>
+      <button class="modal-close" onclick="toggleCart()">×</button>
+    </div>
+
+    <div class="progress-steps">
+      <div class="progress-step active" id="node-step-1">
+        <div class="step-bubble">1</div>
+        <span class="step-text">Review</span>
+      </div>
+      <div class="progress-step" id="node-step-2">
+        <div class="step-bubble">2</div>
+        <span class="step-text">Details</span>
+      </div>
+      <div class="progress-step" id="node-step-3">
+        <div class="step-bubble">3</div>
+        <span class="step-text">Payment</span>
+      </div>
+      <div class="progress-step" id="node-step-4">
+        <div class="step-bubble">4</div>
+        <span class="step-text">Invoice</span>
+      </div>
+    </div>
+
+    <div class="cart-view-step active" id="view-step-1">
+      <div class="order-type-tabs">
+        <button class="type-tab active" id="btn-delivery" onclick="setOrderType('Delivery')">Delivery (Rs. 100)</button>
+        <button class="type-tab" id="btn-takeaway" onclick="setOrderType('Takeaway')">Takeaway / Pick-up</button>
+      </div>
+      <div class="cart-items-box" id="cart-items-container"></div>
+    </div>
+
+    <div class="cart-view-step" id="view-step-2">
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <div class="input-glow-group" style="margin-bottom: 0;">
+          <label>Full Name *</label>
+          <input type="text" id="cust-name" class="form-glow-control" placeholder="Muhammad Ali" oninput="saveCustomerData()" />
+        </div>
+        
+        <div class="input-glow-group" style="margin-bottom: 0;">
+          <label>WhatsApp / Phone Number *</label>
+          <input type="tel" id="cust-phone" class="form-glow-control" placeholder="03080671101" oninput="saveCustomerData()" />
+        </div>
+        
+        <div class="input-glow-group" style="margin-bottom: 0;">
+          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+            <label style="margin-bottom: 0;">Delivery Address *</label>
+            <button type="button" class="btn-ticket" onclick="detectCustomerGPS()" style="padding: 4px 8px; font-size: 10.5px; border-color: var(--accent);">
+              📍 Detect Location
+            </button>
+          </div>
+          <input type="text" id="cust-address" class="form-glow-control" placeholder="House #, Street, Karor Lal Eason" oninput="saveCustomerData()" />
+          <input type="hidden" id="cust-gps-link" value="" />
+        </div>
+
+        <div class="input-glow-group" style="margin-bottom: 0;">
+          <label>Special Instructions (Optional)</label>
+          <textarea id="cust-notes" class="form-glow-control" style="height: 70px; resize: none;" placeholder="Less spicy, call upon arrival..." oninput="saveCustomerData()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="cart-view-step" id="view-step-3">
+      <div class="payment-method-card active" onclick="selectPaymentMethod('WhatsApp', this)">
+        <div style="font-weight: 700; color: var(--whatsapp);">💬 Order via WhatsApp (Instant Receipt)</div>
+        <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">Sends formatted items directly to 0308-0671101 on WhatsApp.</p>
+      </div>
+
+      <div class="payment-method-card" onclick="selectPaymentMethod('COD', this)">
+        <div style="font-weight: 700;">💵 Cash on Delivery (COD)</div>
+        <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">Pay with cash when our rider delivers your pizza in Karor.</p>
+      </div>
+
+      <div class="payment-method-card" onclick="selectPaymentMethod('JazzCash', this)">
+        <div style="font-weight: 700; color: #ff5252;">🔴 JazzCash Mobile Account</div>
+        <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">
+          Send exact total to: <strong style="color: #fff;">0308-0671101</strong> (Pizza Lab)
+        </div>
+        <input type="text" id="jazzcash-tid" class="form-glow-control" style="margin-top: 8px; padding: 8px 12px; font-size: 11.5px;" placeholder="Enter 12-digit JazzCash TID" />
+      </div>
+
+      <div class="payment-method-card" onclick="selectPaymentMethod('EasyPaisa', this)">
+        <div style="font-weight: 700; color: var(--whatsapp);">🟢 EasyPaisa Mobile Wallet</div>
+        <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">
+          Send exact total to: <strong style="color: #fff;">0308-0671101</strong> (Pizza Lab)
+        </div>
+        <input type="text" id="easypaisa-tid" class="form-glow-control" style="margin-top: 8px; padding: 8px 12px; font-size: 11.5px;" placeholder="Enter EasyPaisa TID / Reference" />
+      </div>
+
+      <div class="payment-method-card" onclick="selectPaymentMethod('PhoneCall', this)">
+        <div style="font-weight: 700;">📞 One-Tap Direct Phone Order</div>
+        <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">Dials 0308-0671101 directly to confirm order verbally.</p>
+      </div>
+    </div>
+
+    <div class="cart-view-step" id="view-step-4">
+      
+      <div class="live-tracker-box">
+        <div class="tracker-title-row">
+          <span style="font-size: 13px; font-weight: 700; color: #fff;">Live Order Status</span>
+          <span class="tracker-badge" id="tracking-status-badge">● RECEIVED</span>
+        </div>
+
+        <div class="tracker-timeline">
+          <div class="tracker-progress-bar" id="tracker-bar"></div>
+          
+          <div class="track-step active" id="t-step-1">
+            <div class="track-node">✓</div>
+            <span class="track-label">Received</span>
+          </div>
+
+          <div class="track-step" id="t-step-2">
+            <div class="track-node">🔥</div>
+            <span class="track-label">In Oven</span>
+          </div>
+
+          <div class="track-step" id="t-step-3">
+            <div class="track-node">🛵</div>
+            <span class="track-label">On Way</span>
+          </div>
+
+          <div class="track-step" id="t-step-4">
+            <div class="track-node">🍕</div>
+            <span class="track-label">Delivered</span>
+          </div>
+        </div>
+
+        <div style="font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 8px;">
+          Estimated Time: <strong style="color: var(--accent);" id="tracking-eta-time">35 - 45 Mins</strong>
+        </div>
+      </div>
+
+      <div id="print-area" class="printable-invoice-card">
+        <div class="invoice-header-clean">
+          <h3>PIZZA LAB KAROR</h3>
+          <p>Karor Lal Eason | Hotline: 0308-0671101</p>
+          <div style="font-size: 13px; font-weight: 800; color: #ea8329; margin-top: 4px;" id="receipt-order-id">#PL-0000</div>
+        </div>
+
+        <div class="invoice-meta-grid">
+          <div><strong>Date:</strong> <span id="r-date"></span></div>
+          <div><strong>Customer:</strong> <span id="r-name"></span></div>
+          <div><strong>Phone:</strong> <span id="r-phone"></span></div>
+          <div><strong>Payment:</strong> <span id="r-method"></span></div>
+          <div style="grid-column: span 2;"><strong>Address:</strong> <span id="r-address"></span></div>
+          <div id="r-tid-row" style="grid-column: span 2; display: none;"><strong>TID:</strong> <span id="r-tid"></span></div>
+        </div>
+
+        <table class="invoice-table">
+          <thead>
+            <tr>
+              <th>Item Formula</th>
+              <th style="text-align: right;">Amount</th>
+            </tr>
+          </thead>
+          <tbody id="receipt-items-list"></tbody>
+        </table>
+
+        <div class="invoice-totals-box">
+          <div><span>Subtotal</span><span id="r-subtotal">Rs. 0</span></div>
+          <div><span>Delivery Fee</span><span id="r-delivery">Rs. 100</span></div>
+          <div class="invoice-grand-row"><span>Grand Total</span><span id="r-total" style="color: #ea8329;">Rs. 0</span></div>
+        </div>
+      </div>
+
+      <div class="invoice-actions-row">
+        <button type="button" class="btn-invoice-download" onclick="downloadInvoicePDF()">
+          📥 Download PDF / Invoice
+        </button>
+        <button type="button" class="btn-invoice-download" style="background: #1e293b;" onclick="printReceipt()">
+          🖨️ Print Receipt
+        </button>
+      </div>
+    </div>
+
+    <div class="cart-footer-controls">
+      <div class="cart-total-lines" id="cart-summary-breakdown">
+        <div style="display: flex; justify-content: space-between;">
+          <span>Subtotal</span>
+          <span id="cart-subtotal">Rs. 0</span>
+        </div>
+        <div style="display: flex; justify-content: space-between;">
+          <span>Delivery Fee</span>
+          <span id="cart-delivery-fee">Rs. 100</span>
+        </div>
+        <div class="cart-total-final">
+          <span>Total Bill</span>
+          <span id="cart-total-val" style="color: var(--accent);">Rs. 0</span>
+        </div>
+      </div>
+
+      <div class="step-btns">
+        <button class="btn-step-prev-act" id="btn-back-step" onclick="prevStep()" style="display: none;">Back</button>
+        <button class="btn-primary" style="flex: 1;" id="btn-next-step" onclick="nextStep()">Proceed to Details →</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="modal-overlay" id="feedback-modal">
+    <div class="modal-box">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+        <h3 style="font-family: 'Titan One'; color: var(--accent); font-size: 22px;">Share Feedback</h3>
+        <button class="modal-close" onclick="closeFeedbackModal()">×</button>
+      </div>
+      <form onsubmit="submitFeedback(event)">
+        <div style="margin-bottom: 14px;">
+          <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">Your Rating</label>
+          <div id="rating-stars" style="font-size: 24px; cursor: pointer; color: #444;">
+            <span onclick="setFeedbackRating(1)">★</span><span onclick="setFeedbackRating(2)">★</span><span onclick="setFeedbackRating(3)">★</span><span onclick="setFeedbackRating(4)">★</span><span onclick="setFeedbackRating(5)">★</span>
+          </div>
+        </div>
+        <div class="input-glow-group">
+          <label>Your Name</label>
+          <input type="text" class="form-glow-control" required />
+        </div>
+        <div class="input-glow-group">
+          <label>Comments & Suggestions</label>
+          <textarea class="form-glow-control" style="height: 90px; resize: none;" placeholder="How was the food and service in Karor?" required></textarea>
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%;">Submit Feedback</button>
+      </form>
+    </div>
+  </div>
+
+  <div class="toast-msg" id="toast-notification">Notification</div>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="logo-badge" style="display: inline-block; margin-bottom: 12px;">PIZZA LAB</div>
+        <p style="color: var(--text-muted); font-size: 12px; line-height: 1.7;">Culinary precision, fresh hand-tossed doughs, and molten cheese innovations in Karor Lal Eason.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="menu.html">Menu</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="track.html">Track Order</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Crust Formulas</h4>
+        <ul>
+          <li><a href="menu.html">Kabab Crust</a></li>
+          <li><a href="menu.html">Cheese Burst</a></li>
+          <li><a href="menu.html">Stuffed Crust</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Location</h4>
+        <ul>
+          <li style="color: var(--text-muted); font-size: 12px;">Karor Lal Eason, Punjab</li>
+          <li style="color: var(--text-muted); font-size: 12px;">0308-0671101</li>
+          <li style="color: var(--text-muted); font-size: 12px;">almasmahdi420@gmail.com</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2026 Pizza Lab. All rights reserved.</span>
+      <span>Karor Lal Eason Branch</span>
+    </div>
+  </footer>
+
+  <script src="menu-data.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>

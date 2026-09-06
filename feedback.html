@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Pizza Lab - Customer Feedback & Reviews</title>
+  
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+
+  <link rel="stylesheet" href="style.css" />
+
+  <style>
+    .star-rating-widget {
+      display: flex;
+      gap: 8px;
+      font-size: 32px;
+      cursor: pointer;
+      color: #333d4e;
+      margin-bottom: 8px;
+      user-select: none;
+    }
+
+    .star-rating-widget span {
+      transition: color 0.15s ease, transform 0.15s ease;
+    }
+
+    .star-rating-widget span:hover {
+      transform: scale(1.15);
+    }
+
+    .feedback-grid {
+      display: grid;
+      grid-template-columns: 1.1fr 1.3fr;
+      gap: 36px;
+      align-items: flex-start;
+    }
+
+    .review-filter-pills {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+      margin-bottom: 20px;
+    }
+
+    .pill-filter-tag {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--glass-border);
+      color: var(--text-muted);
+      padding: 6px 14px;
+      border-radius: 8px;
+      font-size: 11px;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+
+    .pill-filter-tag.active {
+      background: var(--accent);
+      color: #ffffff;
+      border-color: var(--accent);
+    }
+
+    .reviews-list-container {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-height: 720px;
+      overflow-y: auto;
+      padding-right: 6px;
+    }
+
+    .reviews-list-container::-webkit-scrollbar {
+      width: 5px;
+    }
+    .reviews-list-container::-webkit-scrollbar-thumb {
+      background: rgba(234, 131, 41, 0.35);
+      border-radius: 10px;
+    }
+
+    .customer-review-card {
+      background: var(--bg-glass);
+      backdrop-filter: var(--glass-blur);
+      border: 1px solid var(--glass-border);
+      border-radius: 16px;
+      padding: 20px;
+      transition: border-color 0.2s ease, transform 0.2s ease;
+    }
+
+    .customer-review-card:hover {
+      border-color: var(--glass-border-hover);
+      transform: translateY(-2px);
+    }
+
+    .review-author-row {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 8px;
+    }
+
+    .review-author-name {
+      font-weight: 700;
+      font-size: 13.5px;
+      color: #fff;
+    }
+
+    .review-date-stamp {
+      font-size: 10.5px;
+      color: var(--text-muted);
+    }
+
+    .review-comment-text {
+      font-size: 12.5px;
+      color: #cbd5e1;
+      line-height: 1.6;
+    }
+
+    .review-item-tag {
+      display: inline-block;
+      margin-top: 10px;
+      background: rgba(234, 131, 41, 0.12);
+      color: var(--accent);
+      border: 1px solid rgba(234, 131, 41, 0.3);
+      padding: 3px 8px;
+      border-radius: 6px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+
+    @media (max-width: 900px) {
+      .feedback-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+  </style>
+</head>
+<body>
+
+  <header>
+    <a href="index.html" class="brand-logo">
+      <div class="logo-badge">PIZZA LAB</div>
+    </a>
+    <nav>
+      <ul>
+        <li><a href="index.html">Home</a></li>
+        <li><a href="menu.html">Menu</a></li>
+        <li><a href="about.html">About</a></li>
+        <li><a href="shop.html">Shop</a></li>
+        <li><a href="contact.html">Contact</a></li>
+        <li><a href="feedback.html" class="active">Feedback</a></li>
+      </ul>
+    </nav>
+    <div class="nav-actions">
+      <div id="nav-auth-slot"><a href="login.html" class="btn-auth-nav">Sign In</a></div>
+      <button class="hamburger-btn" onclick="toggleMobileNav()">☰</button>
+      <div class="cart-trigger" onclick="toggleCart()">
+        <svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"></circle><circle cx="19" cy="20" r="1.5"></circle><path d="M2 3h3.2l2.3 11.2a1.8 1.8 0 0 0 1.8 1.4h9.4a1.8 1.8 0 0 0 1.8-1.4L22 6.5H6.2"></path></svg>
+        <div class="cart-badge" id="cart-count">0</div>
+      </div>
+    </div>
+  </header>
+
+  <div class="mobile-menu" id="mobile-menu">
+    <a href="index.html">Home</a>
+    <a href="menu.html">Full Menu</a>
+    <a href="about.html">About Us</a>
+    <a href="shop.html">Combos & Deals</a>
+    <a href="contact.html">Contact Us</a>
+    <a href="feedback.html">Feedback</a>
+    <a href="login.html">Sign In / Register</a>
+  </div>
+
+  <main class="page-container">
+    <h2 class="section-heading">Laboratory Feedback & Reviews</h2>
+    <p class="section-subtext">Rate your recent food experience or read verified test reports from fellow foodies.</p>
+
+    <div class="feedback-grid">
+      <div class="message-card-box">
+        <h3 style="font-family:'Titan One'; color:var(--accent); font-size:22px; margin-bottom:4px;">Rate Your Experience</h3>
+        <p style="color:var(--text-muted); font-size:12.5px; margin-bottom:18px;">Your ratings help our culinary team improve recipes and delivery times.</p>
+
+        <form id="feedback-full-form" onsubmit="submitFullFeedback(event)">
+          <div class="input-glow-group" style="margin-bottom: 12px;">
+            <label>Tap Stars to Rate *</label>
+            <div class="star-rating-widget" id="main-star-widget">
+              <span data-val="1">★</span>
+              <span data-val="2">★</span>
+              <span data-val="3">★</span>
+              <span data-val="4">★</span>
+              <span data-val="5">★</span>
+            </div>
+            <input type="hidden" id="selected-stars-input" value="5" />
+          </div>
+
+          <div class="input-glow-group">
+            <label>Customer Name *</label>
+            <input type="text" id="fb-author" class="form-glow-control" placeholder="e.g. Bilal Haider" required />
+          </div>
+
+          <div class="input-glow-group">
+            <label>Dish / Formula Ordered</label>
+            <input type="text" id="fb-dish" class="form-glow-control" placeholder="e.g. Kabab Crust Pizza, Max Deal" />
+          </div>
+
+          <div class="input-glow-group">
+            <label>Experience Type</label>
+            <div class="pill-cluster" id="exp-type-pills">
+              <button type="button" class="pill-option active" onclick="setExperienceTag('Home Delivery', this)">Home Delivery</button>
+              <button type="button" class="pill-option" onclick="setExperienceTag('Takeaway', this)">Takeaway</button>
+              <button type="button" class="pill-option" onclick="setExperienceTag('Dine-In', this)">Dine-In</button>
+            </div>
+            <input type="hidden" id="exp-type-input" value="Home Delivery" />
+          </div>
+
+          <div class="input-glow-group">
+            <label>Review & Suggestions *</label>
+            <textarea id="fb-comments" class="form-glow-control" style="height:110px; resize:none;" placeholder="How was the crust fluffiness, cheese pull, spice level, and rider delivery speed?" required></textarea>
+          </div>
+
+          <button type="submit" class="btn-primary" style="width:100%;">Publish Feedback &rarr;</button>
+        </form>
+      </div>
+
+      <div>
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:12px; flex-wrap:wrap; gap:8px;">
+          <h3 style="font-size:18px; font-weight:800; color:#fff;">Live Verified Ratings</h3>
+          <span style="font-size:12px; color:var(--text-muted);" id="reviews-counter-badge">Showing recent reviews</span>
+        </div>
+
+        <div class="review-filter-pills">
+          <button class="pill-filter-tag active" onclick="filterReviews('All', this)">All</button>
+          <button class="pill-filter-tag" onclick="filterReviews('5-Star', this)">⭐⭐⭐⭐⭐ Only</button>
+          <button class="pill-filter-tag" onclick="filterReviews('Home Delivery', this)">Delivery</button>
+          <button class="pill-filter-tag" onclick="filterReviews('Takeaway', this)">Takeaway</button>
+        </div>
+
+        <div class="reviews-list-container" id="reviews-feed-box">
+          </div>
+      </div>
+    </div>
+  </main>
+
+  <div class="cart-drawer" id="cart-drawer">
+    <div class="cart-drawer-header">
+      <h3>Your Order</h3>
+      <button class="modal-close" onclick="toggleCart()">&times;</button>
+    </div>
+
+    <div class="progress-steps">
+      <div class="progress-step active" id="node-step-1">
+        <div class="step-bubble">1</div>
+        <span class="step-text">Review</span>
+      </div>
+      <div class="progress-step" id="node-step-2">
+        <div class="step-bubble">2</div>
+        <span class="step-text">Details</span>
+      </div>
+      <div class="progress-step" id="node-step-3">
+        <div class="step-bubble">3</div>
+        <span class="step-text">Payment</span>
+      </div>
+      <div class="progress-step" id="node-step-4">
+        <div class="step-bubble">4</div>
+        <span class="step-text">Invoice</span>
+      </div>
+    </div>
+
+    <div class="cart-view-step active" id="view-step-1">
+      <div class="order-type-tabs">
+        <button class="type-tab active" id="btn-delivery" onclick="setOrderType('Delivery')">Delivery (Rs. 100)</button>
+        <button class="type-tab" id="btn-takeaway" onclick="setOrderType('Takeaway')">Takeaway / Pick-up</button>
+      </div>
+      <div class="cart-items-box" id="cart-items-container"></div>
+    </div>
+
+    <div class="cart-view-step" id="view-step-2">
+      <div style="display:flex; flex-direction:column; gap:12px;">
+        <div class="input-glow-group" style="margin-bottom:0;">
+          <label>Full Name *</label>
+          <input type="text" id="cust-name" class="form-glow-control" placeholder="Muhammad Ali" oninput="saveCustomerData()" />
+        </div>
+        <div class="input-glow-group" style="margin-bottom:0;">
+          <label>WhatsApp / Phone Number *</label>
+          <input type="tel" id="cust-phone" class="form-glow-control" placeholder="03XXXXXXXXX" oninput="saveCustomerData()" />
+        </div>
+        <div class="input-glow-group" style="margin-bottom:0;">
+          <label>Delivery Street Address *</label>
+          <input type="text" id="cust-address" class="form-glow-control" placeholder="House #, Street, Faisalabad" oninput="saveCustomerData()" />
+        </div>
+        <div class="input-glow-group" style="margin-bottom:0;">
+          <label>Special Notes (Optional)</label>
+          <textarea id="cust-notes" class="form-glow-control" style="height:75px; resize:none;" placeholder="Less spicy, extra napkins..." oninput="saveCustomerData()"></textarea>
+        </div>
+      </div>
+    </div>
+
+    <div class="cart-view-step" id="view-step-3">
+      <div class="payment-method-card active" onclick="selectPaymentMethod('WhatsApp', this)">
+        <div style="font-weight:700; color:var(--whatsapp);">💬 Order via WhatsApp (Instant Receipt)</div>
+        <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;">Dispatches your formatted order directly to our counter staff via WhatsApp.</p>
+      </div>
+
+      <div class="payment-method-card" onclick="selectPaymentMethod('COD', this)">
+        <div style="font-weight:700;">💵 Cash on Delivery (COD)</div>
+        <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;">Pay with cash when our rider delivers your food fresh to your doorstep.</p>
+      </div>
+
+      <div class="payment-method-card" onclick="selectPaymentMethod('JazzCash', this)">
+        <div style="font-weight:700; color:#ff5252;">🔴 JazzCash Mobile Account</div>
+        <div style="font-size:11.5px; color:var(--text-muted); margin-top:4px;">
+          Send exact amount to: <strong style="color:#fff;">0324-7620676</strong> (Pizza Lab)
+        </div>
+        <input type="text" id="jazzcash-tid" class="form-glow-control" style="margin-top:8px; padding:8px 12px; font-size:11.5px;" placeholder="Enter 12-digit JazzCash TID" />
+      </div>
+
+      <div class="payment-method-card" onclick="selectPaymentMethod('EasyPaisa', this)">
+        <div style="font-weight:700; color:var(--easypaisa-green);">🟢 EasyPaisa Mobile Wallet</div>
+        <div style="font-size:11.5px; color:var(--text-muted); margin-top:4px;">
+          Send exact amount to: <strong style="color:#fff;">0314-1444272</strong> (Pizza Lab)
+        </div>
+        <input type="text" id="easypaisa-tid" class="form-glow-control" style="margin-top:8px; padding:8px 12px; font-size:11.5px;" placeholder="Enter EasyPaisa TID / Reference" />
+      </div>
+
+      <div class="payment-method-card" onclick="selectPaymentMethod('PhoneCall', this)">
+        <div style="font-weight:700;">📞 One-Tap Direct Phone Order</div>
+        <p style="font-size:11.5px; color:var(--text-muted); margin-top:4px;">Speak directly with our counter staff to place your order verbally.</p>
+      </div>
+    </div>
+
+    <div class="cart-view-step" id="view-step-4">
+      <div class="live-tracker-box">
+        <div class="tracker-title-row">
+          <span style="font-size: 13px; font-weight: 700; color: #fff;">Live Order Status</span>
+          <span class="tracker-badge" id="tracking-status-badge">● LIVE TRACKING</span>
+        </div>
+
+        <div class="tracker-timeline">
+          <div class="tracker-progress-bar" id="tracker-bar"></div>
+          
+          <div class="track-step done" id="t-step-1">
+            <div class="track-node">✓</div>
+            <span class="track-label">Received</span>
+          </div>
+
+          <div class="track-step active" id="t-step-2">
+            <div class="track-node">🔥</div>
+            <span class="track-label">In Oven</span>
+          </div>
+
+          <div class="track-step" id="t-step-3">
+            <div class="track-node">🛵</div>
+            <span class="track-label">On Way</span>
+          </div>
+
+          <div class="track-step" id="t-step-4">
+            <div class="track-node">🍕</div>
+            <span class="track-label">Delivered</span>
+          </div>
+        </div>
+
+        <div style="font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 8px;">
+          Estimated Time: <strong style="color: var(--accent);" id="tracking-eta-time">30 - 40 Mins</strong>
+        </div>
+      </div>
+
+      <div id="print-area" class="printable-invoice-card">
+        <div class="invoice-header-clean">
+          <h3>PIZZA LAB FAISALABAD</h3>
+          <p>Nag Pull Adda | Hotline: 0324-7620676 / 0314-1444272</p>
+          <div style="font-size: 13px; font-weight: 800; color: #ea8329; margin-top: 4px;" id="receipt-order-id">#PL-0000</div>
+        </div>
+
+        <div class="invoice-meta-grid">
+          <div><strong>Date:</strong> <span id="r-date"></span></div>
+          <div><strong>Customer:</strong> <span id="r-name"></span></div>
+          <div><strong>Phone:</strong> <span id="r-phone"></span></div>
+          <div><strong>Payment:</strong> <span id="r-method"></span></div>
+          <div style="grid-column: span 2;"><strong>Address:</strong> <span id="r-address"></span></div>
+          <div id="r-tid-row" style="grid-column: span 2; display: none;"><strong>Transaction ID:</strong> <span id="r-tid"></span></div>
+        </div>
+
+        <table class="invoice-table">
+          <thead>
+            <tr>
+              <th>Item Formula</th>
+              <th style="text-align: right;">Amount</th>
+            </tr>
+          </thead>
+          <tbody id="receipt-items-list"></tbody>
+        </table>
+
+        <div class="invoice-totals-box">
+          <div><span>Subtotal</span><span id="r-subtotal">Rs. 0</span></div>
+          <div><span>Delivery Charge</span><span id="r-delivery">Rs. 0</span></div>
+          <div class="invoice-grand-row"><span>Grand Total</span><span id="r-total" style="color: #ea8329;">Rs. 0</span></div>
+        </div>
+      </div>
+
+      <div class="invoice-actions-row">
+        <button type="button" class="btn-invoice-download" onclick="downloadInvoicePDF()">
+          📥 Download PDF / Invoice
+        </button>
+        <button type="button" class="btn-invoice-download" style="background: #1e293b;" onclick="printReceipt()">
+          🖨️ Print Receipt
+        </button>
+      </div>
+    </div>
+
+    <div class="cart-footer-controls">
+      <div class="cart-total-lines" id="cart-summary-breakdown">
+        <div style="display:flex; justify-content:space-between;">
+          <span>Subtotal</span>
+          <span id="cart-subtotal">Rs. 0</span>
+        </div>
+        <div style="display:flex; justify-content:space-between;">
+          <span>Delivery Fee</span>
+          <span id="cart-delivery-fee">Rs. 100</span>
+        </div>
+        <div class="cart-total-final">
+          <span>Total Bill</span>
+          <span id="cart-total-val" style="color:var(--accent);">Rs. 0</span>
+        </div>
+      </div>
+
+      <div class="step-btns">
+        <button class="btn-step-prev-act" id="btn-back-step" onclick="prevStep()" style="display:none;">Back</button>
+        <button class="btn-step-action" id="btn-next-step" onclick="nextStep()">Proceed to Details &rarr;</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="toast-msg" id="toast-notification">Notification</div>
+
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-col">
+        <div class="logo-badge" style="display:inline-block;margin-bottom:12px;">PIZZA LAB</div>
+        <p style="color:var(--text-muted);font-size:12px;line-height:1.7;">Culinary precision, fresh doughs, real mozzarella, and signature oven crusts.</p>
+      </div>
+      <div class="footer-col">
+        <h4>Navigation</h4>
+        <ul>
+          <li><a href="index.html">Home</a></li>
+          <li><a href="menu.html">Menu</a></li>
+          <li><a href="about.html">About</a></li>
+          <li><a href="shop.html">Shop</a></li>
+          <li><a href="contact.html">Contact</a></li>
+          <li><a href="feedback.html">Feedback</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Crust Formulas</h4>
+        <ul>
+          <li><a href="menu.html">Kabab Crust</a></li>
+          <li><a href="menu.html">Cheese Burst</a></li>
+          <li><a href="menu.html">Stuffed Crust</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h4>Location</h4>
+        <ul>
+          <li style="color:var(--text-muted);font-size:12px;">Nag Pull Adda, Faisalabad</li>
+          <li style="color:var(--text-muted);font-size:12px;">0324-7620676 / 0314-1444272</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>&copy; 2026 Pizza Lab. All rights reserved.</span>
+      <span>Engineered for Maximum Flavor</span>
+    </div>
+  </footer>
+
+  <script src="menu-data.js"></script>
+  <script src="app.js"></script>
+
+  <script>
+    // Initial Verified Sample Reviews
+    const initialReviews = [
+      {
+        id: 1,
+        author: "Hamza Tariq",
+        rating: 5,
+        dish: "Kabab Crust Pizza (Large)",
+        type: "Home Delivery",
+        date: "Yesterday",
+        comment: "The crust is genuinely stuffed with proper seekh kebabs, not just hollow air or sauce. Mozzarella was hot and stretchy upon arrival in Samanabad."
+      },
+      {
+        id: 2,
+        author: "Usman Ali",
+        rating: 5,
+        dish: "Max Deal",
+        type: "Home Delivery",
+        date: "2 days ago",
+        comment: "WhatsApp ordering process is super convenient. Sent the location pin and rider was here in 32 minutes flat. Hot wings were nicely spiced."
+      },
+      {
+        id: 3,
+        author: "Sana Sheikh",
+        rating: 5,
+        dish: "Special Creamy Pizza",
+        type: "Takeaway",
+        date: "3 days ago",
+        comment: "Silky white sauce formula is balanced and not excessively sweet. Perfect soft crust edges. Our family regular weekend spot now."
+      },
+      {
+        id: 4,
+        author: "Dr. Farhan",
+        rating: 4,
+        dish: "Cheese Burst Pizza",
+        type: "Dine-In",
+        date: "5 days ago",
+        comment: "Heavily loaded cheese burst. Great taste and clean seating area near Nag Pull adda. Recommended!"
+      }
+    ];
+
+    let currentReviewsFilter = 'All';
+
+    // Interactive Star Hover & Click Setup
+    function setupStarRatingWidget() {
+      const stars = document.querySelectorAll('#main-star-widget span');
+      const input = document.getElementById('selected-stars-input');
+
+      function paintStars(count) {
+        stars.forEach(s => {
+          const val = parseInt(s.getAttribute('data-val'));
+          s.style.color = val <= count ? '#ea8329' : '#333d4e';
+        });
+      }
+
+      paintStars(5); // Default 5 stars
+
+      stars.forEach(star => {
+        star.addEventListener('mouseenter', () => {
+          paintStars(parseInt(star.getAttribute('data-val')));
+        });
+
+        star.addEventListener('click', () => {
+          const rating = parseInt(star.getAttribute('data-val'));
+          input.value = rating;
+          paintStars(rating);
+          playSound();
+        });
+      });
+
+      const widget = document.getElementById('main-star-widget');
+      if (widget) {
+        widget.addEventListener('mouseleave', () => {
+          paintStars(parseInt(input.value));
+        });
+      }
+    }
+
+    function setExperienceTag(tag, btn) {
+      document.getElementById('exp-type-input').value = tag;
+      document.querySelectorAll('#exp-type-pills .pill-option').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      playSound();
+    }
+
+    function renderReviewsFeed() {
+      const container = document.getElementById('reviews-feed-box');
+      if (!container) return;
+
+      const stored = JSON.parse(localStorage.getItem('pizza_lab_custom_reviews') || '[]');
+      const allReviews = [...stored, ...initialReviews];
+
+      const filtered = allReviews.filter(rev => {
+        if (currentReviewsFilter === 'All') return true;
+        if (currentReviewsFilter === '5-Star') return rev.rating === 5;
+        return rev.type === currentReviewsFilter;
+      });
+
+      container.innerHTML = '';
+      if (filtered.length === 0) {
+        container.innerHTML = '<div style="color:var(--text-muted); font-size:13px; text-align:center; padding:30px;">No reviews match this category yet.</div>';
+        return;
+      }
+
+      filtered.forEach(r => {
+        const card = document.createElement('div');
+        card.className = 'customer-review-card';
+        card.innerHTML = `
+          <div class="review-author-row">
+            <div>
+              <div class="review-author-name">${r.author}</div>
+              <div style="color:var(--accent); font-size:12px; margin-top:2px;">${'★'.repeat(r.rating)}${'☆'.repeat(5 - r.rating)}</div>
+            </div>
+            <div class="review-date-stamp">${r.date}</div>
+          </div>
+          <p class="review-comment-text">"${r.comment}"</p>
+          <div style="display:flex; gap:8px; align-items:center; flex-wrap:wrap;">
+            ${r.dish ? `<span class="review-item-tag">🍕 ${r.dish}</span>` : ''}
+            <span style="font-size:10px; color:var(--text-muted); margin-top:8px;">• ${r.type}</span>
+          </div>
+        `;
+        container.appendChild(card);
+      });
+    }
+
+    function filterReviews(filter, btn) {
+      currentReviewsFilter = filter;
+      document.querySelectorAll('.pill-filter-tag').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderReviewsFeed();
+      playSound();
+    }
+
+    function submitFullFeedback(e) {
+      e.preventDefault();
+      const author = document.getElementById('fb-author').value.trim();
+      const dish = document.getElementById('fb-dish').value.trim();
+      const rating = parseInt(document.getElementById('selected-stars-input').value) || 5;
+      const type = document.getElementById('exp-type-input').value;
+      const comment = document.getElementById('fb-comments').value.trim();
+
+      const newReview = {
+        id: Date.now(),
+        author,
+        dish,
+        rating,
+        type,
+        date: 'Just now',
+        comment
+      };
+
+      const stored = JSON.parse(localStorage.getItem('pizza_lab_custom_reviews') || '[]');
+      stored.unshift(newReview);
+      localStorage.setItem('pizza_lab_custom_reviews', JSON.stringify(stored));
+
+      showToast("Thank you! Your verified review has been published.");
+      e.target.reset();
+      setupStarRatingWidget();
+      renderReviewsFeed();
+      playSound();
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      setupStarRatingWidget();
+      renderReviewsFeed();
+    });
+  </script>
+</body>
+</html>
