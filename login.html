@@ -3,98 +3,399 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pizza Lab - Sign In | Karor Lal Eason</title>
+  <title>Customer Portal & Staff Hub | Pizza Lab Karor</title>
 
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
+  <!-- Core Stylesheet -->
   <link rel="stylesheet" href="style.css" />
+
+  <style>
+    body {
+      min-height: 100vh;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 24px 16px;
+    }
+
+    .auth-card {
+      background: var(--bg-card);
+      border: 1px solid var(--glass-border);
+      backdrop-filter: var(--glass-blur);
+      -webkit-backdrop-filter: var(--glass-blur);
+      padding: 34px 28px;
+      border-radius: var(--radius-xl);
+      width: 100%;
+      max-width: 440px;
+      box-shadow: 0 30px 70px rgba(0, 0, 0, 0.8);
+    }
+
+    .brand-header {
+      text-align: center;
+      margin-bottom: 22px;
+    }
+
+    .brand-header h1 {
+      font-family: 'Titan One', cursive;
+      color: var(--accent);
+      font-size: 28px;
+      letter-spacing: 0.5px;
+    }
+
+    .brand-header p {
+      font-size: 12.5px;
+      color: var(--text-muted);
+      margin-top: 4px;
+    }
+
+    .mode-switch-tabs {
+      display: flex;
+      background: rgba(0, 0, 0, 0.4);
+      padding: 4px;
+      border-radius: var(--radius-md);
+      margin-bottom: 18px;
+      border: 1px solid var(--glass-border);
+      gap: 4px;
+    }
+
+    .mode-switch-btn {
+      flex: 1;
+      padding: 10px 0;
+      border: none;
+      background: transparent;
+      color: var(--text-muted);
+      font-size: 12.5px;
+      font-weight: 700;
+      border-radius: 10px;
+      cursor: pointer;
+      transition: var(--transition);
+    }
+
+    .mode-switch-btn.active {
+      background: var(--accent);
+      color: #fff;
+      box-shadow: 0 4px 12px var(--accent-glow);
+    }
+
+    .sub-tabs {
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 18px;
+      border-bottom: 1px solid var(--glass-border);
+      padding-bottom: 10px;
+    }
+
+    .sub-tab-btn {
+      background: none;
+      border: none;
+      color: var(--text-muted);
+      font-size: 12px;
+      font-weight: 700;
+      cursor: pointer;
+      padding-bottom: 4px;
+      border-bottom: 2px solid transparent;
+      transition: var(--transition);
+    }
+
+    .sub-tab-btn.active {
+      color: #fff;
+      border-bottom-color: var(--accent);
+    }
+
+    .auth-msg {
+      font-size: 12px;
+      font-weight: 600;
+      text-align: center;
+      margin-top: 12px;
+      min-height: 18px;
+    }
+
+    .auth-msg.error { color: var(--danger); }
+    .auth-msg.success { color: var(--success); }
+
+    .back-link {
+      display: block;
+      text-align: center;
+      margin-top: 20px;
+      color: var(--text-muted);
+      font-size: 12px;
+      text-decoration: none;
+    }
+
+    .back-link:hover { color: #fff; }
+  </style>
 </head>
 <body>
 
-  <header>
-    <a href="index.html" class="brand-logo">
-      <div class="logo-badge">PIZZA LAB</div>
-    </a>
-    <nav>
-      <ul>
-        <li><a href="index.html">Home</a></li>
-        <li><a href="menu.html">Menu</a></li>
-        <li><a href="about.html">About</a></li>
-        <li><a href="shop.html">Shop</a></li>
-        <li><a href="contact.html">Contact</a></li>
-      </ul>
-    </nav>
-  </header>
+  <div class="auth-card">
+    <div class="brand-header">
+      <div style="font-size: 32px; margin-bottom: 4px;">🍕</div>
+      <h1>PIZZA LAB</h1>
+      <p>Karor Lal Eason Online Portal</p>
+    </div>
 
-  <main class="page-container" style="display: flex; justify-content: center; align-items: center; min-height: calc(100vh - 200px);">
-    <div class="message-card-box" style="width: 100%; max-width: 440px;">
-      <h2 style="font-family: 'Titan One'; color: var(--accent); font-size: 26px; text-align: center; margin-bottom: 6px;">Welcome Back</h2>
-      <p style="color: var(--text-muted); font-size: 13px; text-align: center; margin-bottom: 24px;">Sign in to order quickly without retyping your Karor delivery address.</p>
+    <!-- Mode Selector -->
+    <div class="mode-switch-tabs">
+      <button type="button" class="mode-switch-btn active" id="btn-mode-cust" onclick="switchMainMode('customer')">Customer Portal</button>
+      <button type="button" class="mode-switch-btn" id="btn-mode-staff" onclick="switchMainMode('staff')">Kitchen Staff</button>
+    </div>
 
-      <form id="login-form">
+    <!-- CUSTOMER SECTION -->
+    <div id="customer-section">
+      <div class="sub-tabs">
+        <button type="button" class="sub-tab-btn active" id="btn-cust-guest" onclick="switchCustomerTab('guest')">⚡ Fast Guest Order</button>
+        <button type="button" class="sub-tab-btn" id="btn-cust-signin" onclick="switchCustomerTab('signin')">Sign In</button>
+        <button type="button" class="sub-tab-btn" id="btn-cust-signup" onclick="switchCustomerTab('signup')">Sign Up</button>
+      </div>
+
+      <!-- 1. GUEST FORM -->
+      <form id="form-cust-guest" onsubmit="handleGuestOrder(event)">
         <div class="input-glow-group">
-          <label>Phone Number or Email *</label>
-          <input type="text" id="login-identifier" class="form-glow-control" placeholder="03080671101 or email@domain.com" required />
+          <label>Full Name *</label>
+          <input type="text" id="guest-name" class="form-glow-control" placeholder="e.g. Tariq Mehmood" required />
         </div>
-
         <div class="input-glow-group">
-          <label>Password *</label>
-          <input type="password" id="login-password" class="form-glow-control" placeholder="••••••••" required />
+          <label>Mobile Number *</label>
+          <input type="tel" id="guest-phone" class="form-glow-control" placeholder="03080671101" required />
         </div>
-
-        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 8px;">Sign In →</button>
+        <div class="input-glow-group">
+          <label>Delivery Street / Landmark (Karor)</label>
+          <input type="text" id="guest-address" class="form-glow-control" placeholder="Mohallah, Ward #, or landmark" />
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 6px;">
+          Order Instantly Without Password →
+        </button>
       </form>
 
-      <div style="text-align: center; margin-top: 20px; font-size: 13px; color: var(--text-muted);">
-        Don't have an account yet? <a href="signup.html" style="color: var(--accent); font-weight: 700; text-decoration: none;">Create One Here</a>
-      </div>
+      <!-- 2. SIGN IN FORM -->
+      <form id="form-cust-signin" onsubmit="handleCustomerSignIn(event)" style="display: none;">
+        <div class="input-glow-group">
+          <label>Email Address *</label>
+          <input type="email" id="signin-email" class="form-glow-control" placeholder="name@domain.com" required autocomplete="email" />
+        </div>
+        <div class="input-glow-group">
+          <label>Password *</label>
+          <input type="password" id="signin-pass" class="form-glow-control" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 6px;">
+          Sign In & Load Profile →
+        </button>
+      </form>
+
+      <!-- 3. SIGN UP FORM -->
+      <form id="form-cust-signup" onsubmit="handleCustomerSignUp(event)" style="display: none;">
+        <div class="input-glow-group">
+          <label>Full Name *</label>
+          <input type="text" id="signup-name" class="form-glow-control" placeholder="e.g. Almas Mahdi" required autocomplete="name" />
+        </div>
+        <div class="input-glow-group">
+          <label>Mobile Number *</label>
+          <input type="tel" id="signup-phone" class="form-glow-control" placeholder="03080671101" required autocomplete="tel" />
+        </div>
+        <div class="input-glow-group">
+          <label>Default Street Address *</label>
+          <input type="text" id="signup-address" class="form-glow-control" placeholder="Ward #, Street, Karor Lal Eason" required autocomplete="street-address" />
+        </div>
+        <div class="input-glow-group">
+          <label>Email Address *</label>
+          <input type="email" id="signup-email" class="form-glow-control" placeholder="name@domain.com" required autocomplete="email" />
+        </div>
+        <div class="input-glow-group">
+          <label>Create Password *</label>
+          <input type="password" id="signup-pass" class="form-glow-control" placeholder="Min 6 characters" required minlength="6" autocomplete="new-password" />
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 6px;">
+          Register Permanent Account →
+        </button>
+      </form>
     </div>
-  </main>
 
-  <div class="toast-msg" id="toast-notification">Notification</div>
+    <!-- KITCHEN STAFF SECTION -->
+    <div id="staff-section" style="display: none;">
+      <form id="form-staff" onsubmit="handleStaffAuth(event)">
+        <div class="input-glow-group">
+          <label>Staff Username</label>
+          <input type="text" id="staff-user-field" class="form-glow-control" placeholder="admin" required autocomplete="username" />
+        </div>
+        <div class="input-glow-group">
+          <label>Access Password</label>
+          <input type="password" id="staff-pass-field" class="form-glow-control" placeholder="••••••••" required autocomplete="current-password" />
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%; margin-top: 6px;">
+          Unlock Kitchen Dispatch Hub →
+        </button>
+      </form>
+    </div>
 
-  <script src="menu-data.js"></script>
-  <script src="app.js"></script>
+    <div class="auth-msg" id="auth-status-msg"></div>
+    <a href="index.html" class="back-link">← Skip and Browse Menu Directly</a>
+  </div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
   <script>
-    document.getElementById('login-form').addEventListener('submit', (e) => {
+    function switchMainMode(mode) {
+      const isCust = (mode === 'customer');
+      document.getElementById('customer-section').style.display = isCust ? 'block' : 'none';
+      document.getElementById('staff-section').style.display = isCust ? 'none' : 'block';
+      document.getElementById('btn-mode-cust').classList.toggle('active', isCust);
+      document.getElementById('btn-mode-staff').classList.toggle('active', !isCust);
+      clearMsg();
+    }
+
+    function switchCustomerTab(tab) {
+      document.getElementById('form-cust-guest').style.display = (tab === 'guest') ? 'block' : 'none';
+      document.getElementById('form-cust-signin').style.display = (tab === 'signin') ? 'block' : 'none';
+      document.getElementById('form-cust-signup').style.display = (tab === 'signup') ? 'block' : 'none';
+
+      document.getElementById('btn-cust-guest').classList.toggle('active', tab === 'guest');
+      document.getElementById('btn-cust-signin').classList.toggle('active', tab === 'signin');
+      document.getElementById('btn-cust-signup').classList.toggle('active', tab === 'signup');
+      clearMsg();
+    }
+
+    function showMsg(text, type) {
+      const msgBox = document.getElementById('auth-status-msg');
+      msgBox.className = 'auth-msg ' + (type === 'success' ? 'success' : 'error');
+      msgBox.innerText = text;
+    }
+
+    function clearMsg() {
+      const msgBox = document.getElementById('auth-status-msg');
+      msgBox.innerText = '';
+      msgBox.className = 'auth-msg';
+    }
+
+    function resetCartSession() {
+      localStorage.removeItem('pizza_lab_cart');
+      localStorage.removeItem('pizza_lab_last_order');
+      localStorage.removeItem('pizza_lab_applied_promo');
+    }
+
+    // 1. Fast Guest Checkout
+    function handleGuestOrder(e) {
       e.preventDefault();
-      const identifier = document.getElementById('login-identifier').value.trim();
-      const password = document.getElementById('login-password').value.trim();
+      const name = document.getElementById('guest-name').value.trim();
+      const phone = document.getElementById('guest-phone').value.trim();
+      const address = document.getElementById('guest-address').value.trim();
 
-      const users = JSON.parse(localStorage.getItem('pizza_lab_users') || '[]');
-      const matched = users.find(u => (u.phone === identifier || u.email === identifier) && u.password === password);
+      if (!name || !phone) {
+        showMsg("Full name and mobile phone are required.", "error");
+        return;
+      }
 
-      if (matched) {
-        localStorage.setItem('pizza_lab_current_user', JSON.stringify(matched));
-        
-        // Auto-save delivery data into the customer checkout state
-        localStorage.setItem('pizza_lab_customer', JSON.stringify({
-          name: matched.name,
-          phone: matched.phone,
-          address: matched.address || 'Karor Lal Eason',
-          notes: ''
-        }));
+      resetCartSession();
+      localStorage.setItem('pizza_lab_current_user', JSON.stringify({
+        name: name + " (Guest)",
+        phone: phone,
+        address: address,
+        isGuest: true
+      }));
 
-        showToast("Signed in successfully!");
-        setTimeout(() => window.location.href = 'index.html', 1000);
+      showMsg("Guest profile verified! Loading menu...", "success");
+      setTimeout(() => { window.location.href = 'menu.html'; }, 500);
+    }
+
+    // 2. Customer Sign In
+    async function handleCustomerSignIn(e) {
+      e.preventDefault();
+      clearMsg();
+
+      const email = document.getElementById('signin-email').value.trim();
+      const pass = document.getElementById('signin-pass').value;
+
+      try {
+        if (!window.cloudAuth) throw new Error("Firebase Authentication is not ready. Please retry.");
+        const cred = await window.cloudAuth.signInWithEmailAndPassword(email, pass);
+        const uid = cred.user.uid;
+
+        resetCartSession();
+        let profile = { name: "Valued Customer", phone: "", address: "", email: email, uid: uid };
+
+        if (window.cloudDb) {
+          const snapshot = await window.cloudDb.ref('users/' + uid).once('value');
+          const data = snapshot.val();
+          if (data) {
+            profile = {
+              name: data.name || profile.name,
+              phone: data.phone || "",
+              address: data.address || "",
+              email: data.email || email,
+              uid: uid
+            };
+          }
+        }
+
+        localStorage.setItem('pizza_lab_current_user', JSON.stringify(profile));
+        showMsg("Signed in successfully! Loading menu...", "success");
+        setTimeout(() => { window.location.href = 'menu.html'; }, 500);
+      } catch (err) {
+        showMsg(err.message, "error");
+      }
+    }
+
+    // 3. Customer Sign Up
+    async function handleCustomerSignUp(e) {
+      e.preventDefault();
+      clearMsg();
+
+      const name = document.getElementById('signup-name').value.trim();
+      const phone = document.getElementById('signup-phone').value.trim();
+      const address = document.getElementById('signup-address').value.trim();
+      const email = document.getElementById('signup-email').value.trim();
+      const pass = document.getElementById('signup-pass').value;
+
+      try {
+        if (!window.cloudAuth) throw new Error("Firebase Authentication is not ready. Please retry.");
+        const cred = await window.cloudAuth.createUserWithEmailAndPassword(email, pass);
+        const uid = cred.user.uid;
+        const profileData = { name, phone, address, email, uid, createdAt: Date.now() };
+
+        if (window.cloudDb) {
+          await window.cloudDb.ref('users/' + uid).set(profileData);
+        }
+
+        resetCartSession();
+        localStorage.setItem('pizza_lab_current_user', JSON.stringify(profileData));
+        showMsg("Account created! Redirecting to menu...", "success");
+        setTimeout(() => { window.location.href = 'menu.html'; }, 500);
+      } catch (err) {
+        showMsg(err.message, "error");
+      }
+    }
+
+    // Staff Gateway
+    const VALID_ADMIN_USER = "admin";
+    const VALID_ADMIN_PASS = "pizzalabkaror";
+
+    function handleStaffAuth(e) {
+      e.preventDefault();
+      clearMsg();
+
+      const user = document.getElementById('staff-user-field').value.trim();
+      const pass = document.getElementById('staff-pass-field').value.trim();
+
+      if (user.toLowerCase() === VALID_ADMIN_USER && pass === VALID_ADMIN_PASS) {
+        sessionStorage.setItem('pizza_lab_admin_token', 'AUTH_VALID_' + Date.now());
+        window.location.href = 'admin.html';
       } else {
-        // Fallback for fast demo login if account was not saved prior
-        const demoUser = {
-          name: identifier.includes('@') ? identifier.split('@')[0] : 'Customer',
-          phone: identifier,
-          address: 'Karor Lal Eason'
-        };
-        localStorage.setItem('pizza_lab_current_user', JSON.stringify(demoUser));
-        localStorage.setItem('pizza_lab_customer', JSON.stringify({
-          name: demoUser.name,
-          phone: demoUser.phone,
-          address: demoUser.address,
-          notes: ''
-        }));
-        showToast("Signed in successfully!");
-        setTimeout(() => window.location.href = 'index.html', 1000);
+        showMsg("Access denied: Invalid staff credentials.", "error");
+      }
+    }
+
+    document.addEventListener('DOMContentLoaded', () => {
+      const urlParams = new URLSearchParams(window.location.search);
+      if (urlParams.get('mode') === 'staff') {
+        switchMainMode('staff');
       }
     });
   </script>
