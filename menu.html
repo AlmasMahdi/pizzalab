@@ -3,21 +3,22 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pizza Lab - Full Menu | Karor Lal Eason</title>
-  
-  <!-- Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-  
-  <!-- Client-side PDF Generator -->
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+  <title>Pizza Lab - Menu & Deals | Karor Lal Eason</title>
 
+  <!-- Google Fonts -->
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
+
+  <!-- Core Stylesheet -->
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
 
-  <!-- Sticky Glass Header -->
+  <!-- Backdrop overlay for slide drawers -->
+  <div class="drawer-backdrop" id="drawer-backdrop" onclick="closeAllDrawers()"></div>
+
+  <!-- Sticky Header Navbar -->
   <header>
     <a href="index.html" class="brand-logo">
       <div class="logo-badge">PIZZA LAB</div>
@@ -25,43 +26,43 @@
     <nav>
       <ul>
         <li><a href="index.html">Home</a></li>
-        <li><a href="menu.html" class="active">Menu</a></li>
+        <li><a href="menu.html" class="active">Menu & Deals</a></li>
         <li><a href="about.html">About</a></li>
-        <li><a href="shop.html">Shop</a></li>
         <li><a href="contact.html">Contact</a></li>
         <li><a href="track.html">Track Order</a></li>
-        <li><a onclick="openFeedbackModal()">Feedback</a></li>
+        <li><a href="#" onclick="openOrderHistory(); return false;">My Orders</a></li>
+        <li><a href="feedback.html">Feedback</a></li>
       </ul>
     </nav>
     <div class="nav-actions">
       <div id="nav-auth-slot"><a href="login.html" class="btn-auth-nav">Sign In</a></div>
-      <button class="hamburger-btn" onclick="toggleMobileNav()">☰</button>
-      <div class="cart-trigger" onclick="toggleCart()">
+      <button class="hamburger-btn" aria-label="Toggle navigation menu" onclick="toggleMobileNav()">☰</button>
+      <div class="cart-trigger" aria-label="Open Tray" onclick="toggleCart()">
         <svg viewBox="0 0 24 24"><circle cx="9" cy="20" r="1.5"></circle><circle cx="19" cy="20" r="1.5"></circle><path d="M2 3h3.2l2.3 11.2a1.8 1.8 0 0 0 1.8 1.4h9.4a1.8 1.8 0 0 0 1.8-1.4L22 6.5H6.2"></path></svg>
         <div class="cart-badge" id="cart-count">0</div>
       </div>
     </div>
   </header>
 
-  <!-- Mobile Drawer Menu -->
+  <!-- Mobile Drawer Navigation -->
   <div class="mobile-menu" id="mobile-menu">
     <a href="index.html">Home</a>
-    <a href="menu.html">Full Menu</a>
+    <a href="menu.html" class="active">Menu & Deals</a>
     <a href="about.html">About Us</a>
-    <a href="shop.html">Combos & Deals</a>
     <a href="contact.html">Contact Us</a>
     <a href="track.html">Track Order</a>
-    <a onclick="openFeedbackModal(); toggleMobileNav();">Feedback</a>
+    <a href="#" onclick="toggleMobileNav(); openOrderHistory(); return false;">My Orders</a>
+    <a href="feedback.html">Customer Reviews</a>
     <a href="login.html">Sign In / Register</a>
   </div>
 
   <main class="page-container">
     
-    <!-- Menu Controls & Category Switches -->
+    <!-- Controls Bar -->
     <div class="menu-controls">
       <div>
-        <h2 class="section-heading">Formula & Flavor Menu</h2>
-        <p class="section-subtext">Engineered crusts, fresh doughs, pure mozzarella, and flame-grilled meats in Karor Lal Eason.</p>
+        <h1 class="section-heading">Formulas & Combos</h1>
+        <p class="section-subtext">Handcrafted pizzas, molten crust variations, and curated meal deals in Karor Lal Eason.</p>
       </div>
       <div class="view-switches">
         <button class="view-btn active" id="btn-grid" onclick="setView('grid')">Grid View</button>
@@ -69,8 +70,8 @@
       </div>
     </div>
 
-    <!-- Category Tabs -->
-    <div class="menu-tabs" style="margin-bottom: 24px;">
+    <!-- Category Filter Tabs -->
+    <div class="menu-tabs" style="margin-bottom: 28px;">
       <button class="tab-btn active" onclick="filterCategory('All', this)">All Formulas</button>
       <button class="tab-btn" onclick="filterCategory('Signature Pizza', this)">Signature Pizzas</button>
       <button class="tab-btn" onclick="filterCategory('Special Pizza', this)">Special Crusts</button>
@@ -78,55 +79,55 @@
       <button class="tab-btn" onclick="filterCategory('Deals & Combos', this)">Deals & Combos</button>
     </div>
 
-    <!-- Dynamic Menu Grid -->
+    <!-- Dynamic Menu Injection Grid -->
     <div class="menu-grid" id="menu-items-box"></div>
 
   </main>
 
-  <!-- Formula Customizer Modal with Restored Extras -->
+  <!-- Formula Customizer Modal -->
   <div class="modal-overlay" id="customizer-modal">
     <div class="modal-box">
       <div class="modal-header">
         <h3 id="modal-item-name">Formula Customizer</h3>
-        <button class="modal-close" onclick="closeCustomizer()">×</button>
+        <button class="modal-close" onclick="closeCustomizer()">&times;</button>
       </div>
 
-      <div class="modal-group" id="size-group">
+      <div class="input-glow-group" id="size-group">
         <label>Select Size</label>
         <div class="pill-cluster" id="modal-sizes"></div>
       </div>
 
-      <div class="modal-group" id="crust-group">
+      <div class="input-glow-group" id="crust-group">
         <label>Crust Formulation</label>
         <div class="pill-cluster">
-          <button class="pill-option active" onclick="setCrust('Normal Crust', 0, this)">Normal Crust (+Rs. 0)</button>
-          <button class="pill-option" onclick="setCrust('Cheese Burst', 300, this)">Cheese Burst (+Rs. 300)</button>
-          <button class="pill-option" onclick="setCrust('Kabab Crust', 350, this)">Kabab Crust (+Rs. 350)</button>
+          <button type="button" class="pill-option active" onclick="setCrust('Normal Crust', 0, this)">Normal Crust (+Rs. 0)</button>
+          <button type="button" class="pill-option" onclick="setCrust('Cheese Burst', 300, this)">Cheese Burst (+Rs. 300)</button>
+          <button type="button" class="pill-option" onclick="setCrust('Kabab Crust', 350, this)">Kabab Crust (+Rs. 350)</button>
         </div>
       </div>
 
-      <div class="modal-group">
+      <div class="input-glow-group">
         <label>Spice Level</label>
         <div class="pill-cluster">
-          <button class="pill-option" onclick="setSpice('Mild', this)">Mild</button>
-          <button class="pill-option active" onclick="setSpice('Medium', this)">Medium</button>
-          <button class="pill-option" onclick="setSpice('Hot & Spicy', this)">Hot & Spicy</button>
+          <button type="button" class="pill-option" onclick="setSpice('Mild', this)">Mild</button>
+          <button type="button" class="pill-option active" onclick="setSpice('Medium', this)">Medium</button>
+          <button type="button" class="pill-option" onclick="setSpice('Hot & Spicy', this)">Hot & Spicy</button>
         </div>
       </div>
 
-      <div class="modal-group" id="addons-group">
-        <label>Extra Laboratory Addons</label>
+      <div class="input-glow-group" id="addons-group">
+        <label>Extra Addons</label>
         <label class="addon-label">
           <span>Extra Cheese Layer (+Rs. 120)</span>
-          <input type="checkbox" id="addon-cheese" onchange="toggleAddon('Extra Cheese', 120, this)" />
+          <input type="checkbox" onchange="toggleAddon('Extra Cheese', 120, this)" />
         </label>
         <label class="addon-label">
           <span>Garlic Mayo Dip (+Rs. 20)</span>
-          <input type="checkbox" id="addon-garlic" onchange="toggleAddon('Garlic Mayo Dip', 20, this)" />
+          <input type="checkbox" onchange="toggleAddon('Garlic Mayo Dip', 20, this)" />
         </label>
         <label class="addon-label">
           <span>Special Mayo Dip (+Rs. 30)</span>
-          <input type="checkbox" id="addon-special" onchange="toggleAddon('Special Mayo Dip', 30, this)" />
+          <input type="checkbox" onchange="toggleAddon('Special Mayo Dip', 30, this)" />
         </label>
       </div>
 
@@ -137,11 +138,11 @@
     </div>
   </div>
 
-  <!-- Multi-Step Cart Drawer with GPS Auto-Detection & All 5 Payments -->
+  <!-- Multi-Step Cart Drawer -->
   <div class="cart-drawer" id="cart-drawer">
     <div class="cart-drawer-header">
       <h3>Your Order</h3>
-      <button class="modal-close" onclick="toggleCart()">×</button>
+      <button class="modal-close" onclick="toggleCart()">&times;</button>
     </div>
 
     <!-- Progress Steps -->
@@ -171,82 +172,85 @@
         <button class="type-tab" id="btn-takeaway" onclick="setOrderType('Takeaway')">Takeaway / Pick-up</button>
       </div>
       <div class="cart-items-box" id="cart-items-container"></div>
+      
+      <!-- Promo Code Input Group -->
+      <div class="promo-input-container">
+        <input type="text" id="promo-input" class="form-glow-control promo-input-box" placeholder="Promo Code (e.g. LAB10)" />
+        <button type="button" class="btn-apply-promo" onclick="applyPromoCode()">Apply</button>
+      </div>
+      <div id="promo-applied-badge" class="promo-badge-box"></div>
     </div>
 
-    <!-- STEP 2: DETAILS WITH GPS AUTO-DETECTOR -->
+    <!-- STEP 2: CUSTOMER DETAILS WITH GPS PIN -->
     <div class="cart-view-step" id="view-step-2">
-      <div style="display: flex; flex-direction: column; gap: 12px;">
-        <div class="input-glow-group" style="margin-bottom: 0;">
-          <label>Full Name *</label>
-          <input type="text" id="cust-name" class="form-glow-control" placeholder="Muhammad Ali" oninput="saveCustomerData()" />
+      <div class="input-glow-group">
+        <label>Full Name *</label>
+        <input type="text" id="cust-name" class="form-glow-control" placeholder="Muhammad Ali" oninput="saveCustomerData()" />
+      </div>
+      
+      <div class="input-glow-group">
+        <label>WhatsApp / Phone Number *</label>
+        <input type="tel" id="cust-phone" class="form-glow-control" placeholder="03080671101" oninput="saveCustomerData()" />
+      </div>
+      
+      <div class="input-glow-group">
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
+          <label style="margin-bottom: 0;">Delivery Street Address *</label>
+          <button type="button" class="btn-secondary" onclick="detectCustomerGPS()" style="padding: 4px 10px; font-size: 11px;">
+            📍 Detect Location
+          </button>
         </div>
-        
-        <div class="input-glow-group" style="margin-bottom: 0;">
-          <label>WhatsApp / Phone Number *</label>
-          <input type="tel" id="cust-phone" class="form-glow-control" placeholder="03080671101" oninput="saveCustomerData()" />
-        </div>
-        
-        <div class="input-glow-group" style="margin-bottom: 0;">
-          <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px;">
-            <label style="margin-bottom: 0;">Delivery Street Address *</label>
-            <button type="button" class="btn-ticket" onclick="detectCustomerGPS()" style="padding: 4px 8px; font-size: 10.5px; border-color: var(--accent);">
-              📍 Detect Location
-            </button>
-          </div>
-          <input type="text" id="cust-address" class="form-glow-control" placeholder="House #, Street, Karor Lal Eason" oninput="saveCustomerData()" />
-          <input type="hidden" id="cust-gps-link" value="" />
-        </div>
+        <input type="text" id="cust-address" class="form-glow-control" placeholder="House #, Street, Karor Lal Eason" oninput="saveCustomerData()" />
+        <input type="hidden" id="cust-gps-link" value="" />
+      </div>
 
-        <div class="input-glow-group" style="margin-bottom: 0;">
-          <label>Special Instructions (Optional)</label>
-          <textarea id="cust-notes" class="form-glow-control" style="height: 70px; resize: none;" placeholder="Less spicy, extra napkins..." oninput="saveCustomerData()"></textarea>
-        </div>
+      <div class="input-glow-group">
+        <label>Special Instructions (Optional)</label>
+        <textarea id="cust-notes" class="form-glow-control" style="height: 70px; resize: none;" placeholder="Less spicy, call upon arrival..." oninput="saveCustomerData()"></textarea>
       </div>
     </div>
 
-    <!-- STEP 3: ALL 5 PAYMENT METHODS -->
+    <!-- STEP 3: PAYMENT GATEWAY SELECTION -->
     <div class="cart-view-step" id="view-step-3">
-      <!-- 1: WhatsApp -->
+      <!-- WhatsApp -->
       <div class="payment-method-card active" onclick="selectPaymentMethod('WhatsApp', this)">
         <div style="font-weight: 700; color: var(--whatsapp);">💬 Order via WhatsApp (Instant Receipt)</div>
-        <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">Sends order receipt directly to 0308-0671101 on WhatsApp.</p>
+        <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">Dispatches complete invoice directly to our official line on WhatsApp.</p>
       </div>
 
-      <!-- 2: Cash on Delivery -->
+      <!-- Cash on Delivery -->
       <div class="payment-method-card" onclick="selectPaymentMethod('COD', this)">
         <div style="font-weight: 700;">💵 Cash on Delivery (COD)</div>
-        <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">Pay with cash when our rider delivers your food in Karor.</p>
+        <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">Pay with cash when our rider delivers your meal in Karor.</p>
       </div>
 
-      <!-- 3: JazzCash -->
+      <!-- JazzCash -->
       <div class="payment-method-card" onclick="selectPaymentMethod('JazzCash', this)">
-        <div style="font-weight: 700; color: #ff5252;">🔴 JazzCash Mobile Account</div>
+        <div style="font-weight: 700; color: var(--jazzcash);">🔴 JazzCash Mobile Account</div>
         <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">
           Send exact total to: <strong style="color: #fff;">0308-0671101</strong> (Pizza Lab)
         </div>
-        <input type="text" id="jazzcash-tid" class="form-glow-control" style="margin-top: 8px; padding: 8px 12px; font-size: 11.5px;" placeholder="Enter 12-digit JazzCash TID" />
+        <input type="text" id="jazzcash-tid" class="form-glow-control" style="margin-top: 8px; font-size: 12px;" placeholder="Enter 12-digit JazzCash TID" />
       </div>
 
-      <!-- 4: EasyPaisa -->
+      <!-- EasyPaisa -->
       <div class="payment-method-card" onclick="selectPaymentMethod('EasyPaisa', this)">
-        <div style="font-weight: 700; color: var(--whatsapp);">🟢 EasyPaisa Mobile Wallet</div>
+        <div style="font-weight: 700; color: var(--easypaisa);">🟢 EasyPaisa Mobile Wallet</div>
         <div style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">
           Send exact total to: <strong style="color: #fff;">0308-0671101</strong> (Pizza Lab)
         </div>
-        <input type="text" id="easypaisa-tid" class="form-glow-control" style="margin-top: 8px; padding: 8px 12px; font-size: 11.5px;" placeholder="Enter EasyPaisa TID / Reference" />
+        <input type="text" id="easypaisa-tid" class="form-glow-control" style="margin-top: 8px; font-size: 12px;" placeholder="Enter EasyPaisa TID / Reference" />
       </div>
 
-      <!-- 5: Phone Call -->
+      <!-- Phone Call -->
       <div class="payment-method-card" onclick="selectPaymentMethod('PhoneCall', this)">
         <div style="font-weight: 700;">📞 One-Tap Direct Phone Order</div>
-        <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">Dials 0308-0671101 directly to confirm order verbally.</p>
+        <p style="font-size: 11.5px; color: var(--text-muted); margin-top: 4px;">Dials 0308-0671101 directly to confirm verbally with kitchen staff.</p>
       </div>
     </div>
 
     <!-- STEP 4: TRACKING & PDF DOWNLOAD -->
     <div class="cart-view-step" id="view-step-4">
-      
-      <!-- Live Tracker -->
       <div class="live-tracker-box">
         <div class="tracker-title-row">
           <span style="font-size: 13px; font-weight: 700; color: #fff;">Live Order Status</span>
@@ -278,7 +282,7 @@
         </div>
 
         <div style="font-size: 12px; color: var(--text-muted); text-align: center; margin-top: 8px;">
-          Estimated Time: <strong style="color: var(--accent);" id="tracking-eta-time">35 - 45 Mins</strong>
+          Estimated Wait: <strong style="color: var(--accent);" id="tracking-eta-time">35 - 45 Mins</strong>
         </div>
       </div>
 
@@ -311,6 +315,10 @@
 
         <div class="invoice-totals-box">
           <div><span>Subtotal</span><span id="r-subtotal">Rs. 0</span></div>
+          <div id="r-discount-row" style="display: none; color: #10b981;">
+            <span>Voucher Discount</span>
+            <span id="r-discount">- Rs. 0</span>
+          </div>
           <div><span>Delivery Fee</span><span id="r-delivery">Rs. 100</span></div>
           <div class="invoice-grand-row"><span>Grand Total</span><span id="r-total" style="color: #ea8329;">Rs. 0</span></div>
         </div>
@@ -319,7 +327,7 @@
       <!-- Invoice Actions -->
       <div class="invoice-actions-row">
         <button type="button" class="btn-invoice-download" onclick="downloadInvoicePDF()">
-          📥 Download PDF / Invoice
+          📥 Download PDF / Receipt
         </button>
         <button type="button" class="btn-invoice-download" style="background: #1e293b;" onclick="printReceipt()">
           🖨️ Print Receipt
@@ -327,12 +335,16 @@
       </div>
     </div>
 
-    <!-- Step Buttons -->
+    <!-- Step Buttons & Totals Footer -->
     <div class="cart-footer-controls">
       <div class="cart-total-lines" id="cart-summary-breakdown">
         <div style="display: flex; justify-content: space-between;">
           <span>Subtotal</span>
           <span id="cart-subtotal">Rs. 0</span>
+        </div>
+        <div id="cart-discount-row" style="display: none; justify-content: space-between; color: #10b981;">
+          <span>Voucher Discount</span>
+          <span id="cart-discount-val">- Rs. 0</span>
         </div>
         <div style="display: flex; justify-content: space-between;">
           <span>Delivery Fee</span>
@@ -351,33 +363,20 @@
     </div>
   </div>
 
-  <!-- Feedback Modal -->
-  <div class="modal-overlay" id="feedback-modal">
-    <div class="modal-box">
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
-        <h3 style="font-family: 'Titan One'; color: var(--accent); font-size: 22px;">Share Feedback</h3>
-        <button class="modal-close" onclick="closeFeedbackModal()">×</button>
-      </div>
-      <form onsubmit="submitFeedback(event)">
-        <div style="margin-bottom: 14px;">
-          <label style="display: block; font-size: 11px; font-weight: 700; color: var(--text-muted); text-transform: uppercase; margin-bottom: 6px;">Your Rating</label>
-          <div id="rating-stars" style="font-size: 24px; cursor: pointer; color: #444;">
-            <span onclick="setFeedbackRating(1)">★</span><span onclick="setFeedbackRating(2)">★</span><span onclick="setFeedbackRating(3)">★</span><span onclick="setFeedbackRating(4)">★</span><span onclick="setFeedbackRating(5)">★</span>
-          </div>
-        </div>
-        <div class="input-glow-group">
-          <label>Your Name</label>
-          <input type="text" class="form-glow-control" required />
-        </div>
-        <div class="input-glow-group">
-          <label>Comments & Suggestions</label>
-          <textarea class="form-glow-control" style="height: 90px; resize: none;" placeholder="How was the taste and service in Karor?" required></textarea>
-        </div>
-        <button type="submit" class="btn-primary" style="width: 100%;">Submit Feedback</button>
-      </form>
+  <!-- Real-Time Order History Drawer -->
+  <div class="orders-drawer" id="orders-drawer">
+    <div class="orders-drawer-header">
+      <h3>My Orders</h3>
+      <button class="modal-close" onclick="closeOrderHistory()">&times;</button>
+    </div>
+    <div class="orders-list-scroll" id="orders-history-container">
+      <p style="text-align: center; color: var(--text-muted); font-size: 13px; margin-top: 40px;">
+        Loading your order history...
+      </p>
     </div>
   </div>
 
+  <!-- Toast Notification Pop -->
   <div class="toast-msg" id="toast-notification">Notification</div>
 
   <!-- Footer -->
@@ -385,15 +384,16 @@
     <div class="footer-grid">
       <div class="footer-col">
         <div class="logo-badge" style="display: inline-block; margin-bottom: 12px;">PIZZA LAB</div>
-        <p style="color: var(--text-muted); font-size: 12px; line-height: 1.7;">Culinary precision, fresh hand-tossed doughs, and molten cheese innovations in Karor Lal Eason.</p>
+        <p style="color: var(--text-muted); font-size: 12px; line-height: 1.7;">
+          Culinary precision, hand-stretched doughs, and signature molten cheese innovations in Karor Lal Eason.
+        </p>
       </div>
       <div class="footer-col">
         <h4>Navigation</h4>
         <ul>
           <li><a href="index.html">Home</a></li>
-          <li><a href="menu.html">Menu</a></li>
+          <li><a href="menu.html">Menu & Deals</a></li>
           <li><a href="about.html">About</a></li>
-          <li><a href="shop.html">Shop</a></li>
           <li><a href="contact.html">Contact</a></li>
           <li><a href="track.html">Track Order</a></li>
         </ul>
@@ -403,15 +403,15 @@
         <ul>
           <li><a href="menu.html">Kabab Crust</a></li>
           <li><a href="menu.html">Cheese Burst</a></li>
-          <li><a href="menu.html">Stuffed Crust</a></li>
+          <li><a href="menu.html">Cheezy Bites</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h4>Location</h4>
         <ul>
-          <li style="color: var(--text-muted); font-size: 12px;">Karor Lal Eason, Punjab</li>
-          <li style="color: var(--text-muted); font-size: 12px;">0308-0671101</li>
-          <li style="color: var(--text-muted); font-size: 12px;">almasmahdi420@gmail.com</li>
+          <li style="color: var(--text-muted); font-size: 12px;">Karor Lal Eason, Punjab, Pakistan</li>
+          <li style="color: var(--text-muted); font-size: 12px;">📞 0308-0671101</li>
+          <li style="color: var(--text-muted); font-size: 12px;">✉️ almasmahdi420@gmail.com</li>
         </ul>
       </div>
     </div>
@@ -421,6 +421,13 @@
     </div>
   </footer>
 
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
+
+  <!-- Application Engine & Menu Catalog -->
   <script src="menu-data.js"></script>
   <script src="app.js"></script>
 </body>
