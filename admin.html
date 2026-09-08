@@ -3,40 +3,128 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Pizza Lab - Kitchen & Order Control Center | Karor</title>
+  <title>Kitchen Dispatch Hub | Pizza Lab Karor</title>
 
   <!-- Google Fonts -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-  <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Titan+One&family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet" />
 
+  <!-- Core Stylesheet -->
   <link rel="stylesheet" href="style.css" />
 
   <style>
-    .admin-container {
-      max-width: 1360px;
-      margin: 30px auto;
-      padding: 0 24px;
-      flex: 1;
-      width: 100%;
+    body {
+      background: var(--bg-dark);
+      color: var(--text-primary);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
     }
 
-    .admin-stats-grid {
+    .admin-header {
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--glass-border);
+      padding: 14px 28px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      flex-wrap: wrap;
+      gap: 12px;
+    }
+
+    .hub-badge {
+      background: var(--accent-subtle);
+      border: 1px solid var(--accent);
+      color: var(--accent);
+      font-size: 11px;
+      font-weight: 800;
+      padding: 3px 8px;
+      border-radius: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .top-controls {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      flex-wrap: wrap;
+    }
+
+    .status-pill {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11.5px;
+      font-weight: 700;
+      padding: 6px 12px;
+      border-radius: 20px;
+      background: rgba(16, 185, 129, 0.1);
+      border: 1px solid rgba(16, 185, 129, 0.3);
+      color: var(--success);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--success);
+      box-shadow: 0 0 8px var(--success);
+    }
+
+    .tab-bar {
+      background: #0a0e17;
+      border-bottom: 1px solid var(--glass-border);
+      padding: 6px 28px 0;
+      display: flex;
+      gap: 8px;
+    }
+
+    .nav-tab-btn {
+      padding: 10px 18px;
+      font-size: 13px;
+      font-weight: 700;
+      background: transparent;
+      border: none;
+      color: var(--text-muted);
+      border-bottom: 2px solid transparent;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: var(--transition);
+    }
+
+    .nav-tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    .nav-badge {
+      background: var(--accent-subtle);
+      color: var(--accent);
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 10px;
+      font-weight: 800;
+    }
+
+    .stats-grid {
       display: grid;
-      grid-template-columns: repeat(4, 1fr);
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
       gap: 16px;
-      margin-bottom: 28px;
+      margin-bottom: 24px;
     }
 
     .stat-card {
-      background: var(--bg-glass);
-      backdrop-filter: var(--glass-blur);
+      background: var(--bg-card);
       border: 1px solid var(--glass-border);
-      border-radius: 16px;
-      padding: 20px;
-      display: flex;
-      flex-direction: column;
-      gap: 6px;
+      padding: 18px 20px;
+      border-radius: var(--radius-md);
     }
 
     .stat-label {
@@ -48,551 +136,831 @@
     }
 
     .stat-val {
-      font-size: 24px;
+      font-size: 26px;
       font-weight: 800;
+      margin-top: 6px;
       color: #fff;
     }
 
-    .admin-toolbar {
+    .filter-bar {
       display: flex;
       justify-content: space-between;
       align-items: center;
       flex-wrap: wrap;
       gap: 12px;
-      margin-bottom: 20px;
+      margin-bottom: 16px;
     }
 
-    .admin-filters {
+    .filter-pills {
       display: flex;
-      gap: 8px;
+      gap: 6px;
       flex-wrap: wrap;
     }
 
-    .filter-btn {
-      background: rgba(255, 255, 255, 0.05);
+    .filter-pill {
+      background: var(--bg-card);
       border: 1px solid var(--glass-border);
       color: var(--text-muted);
-      padding: 8px 14px;
-      border-radius: 8px;
       font-size: 12px;
       font-weight: 700;
+      padding: 6px 14px;
+      border-radius: 20px;
       cursor: pointer;
-      transition: all 0.2s;
+      transition: var(--transition);
     }
 
-    .filter-btn.active {
+    .filter-pill.active {
       background: var(--accent);
       color: #fff;
       border-color: var(--accent);
     }
 
-    .table-container {
-      background: var(--bg-glass);
-      backdrop-filter: var(--glass-blur);
+    .table-panel {
+      background: var(--bg-card);
       border: 1px solid var(--glass-border);
-      border-radius: 20px;
-      overflow-x: auto;
+      border-radius: var(--radius-lg);
+      overflow: hidden;
     }
 
-    .orders-table {
+    .table-wrapper {
+      overflow-x: auto;
+      width: 100%;
+    }
+
+    table {
       width: 100%;
       border-collapse: collapse;
-      font-size: 13px;
       text-align: left;
+      font-size: 13px;
     }
 
-    .orders-table th {
-      background: rgba(255, 255, 255, 0.03);
-      padding: 14px 18px;
+    thead {
+      background: rgba(0, 0, 0, 0.4);
       border-bottom: 1px solid var(--glass-border);
-      color: var(--text-muted);
-      font-weight: 700;
+    }
+
+    th {
+      padding: 12px 16px;
       font-size: 11px;
       text-transform: uppercase;
-      letter-spacing: 0.5px;
+      letter-spacing: 0.6px;
+      color: var(--text-muted);
+      font-weight: 700;
     }
 
-    .orders-table td {
-      padding: 16px 18px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    td {
+      padding: 14px 16px;
+      border-bottom: 1px solid var(--glass-border);
       vertical-align: middle;
     }
 
-    .orders-table tr:hover {
+    tbody tr:hover {
       background: rgba(255, 255, 255, 0.02);
     }
 
-    .btn-rider-map {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      background: rgba(37, 211, 102, 0.15);
-      color: #25d366;
-      border: 1px solid #25d366;
-      padding: 3px 8px;
-      border-radius: 6px;
-      font-size: 10.5px;
-      font-weight: 700;
-      text-decoration: none;
-      margin-top: 4px;
-      transition: all 0.2s;
+    .order-id-link {
+      font-weight: 800;
+      color: var(--accent);
+      cursor: pointer;
+      text-decoration: underline;
     }
 
-    .btn-rider-map:hover {
-      background: #25d366;
-      color: #fff;
+    .item-tag {
+      background: rgba(255, 255, 255, 0.04);
+      border: 1px solid var(--glass-border);
+      padding: 2px 6px;
+      border-radius: 4px;
+      display: inline-block;
+      margin: 2px 0;
+      font-size: 11.5px;
     }
 
-    .select-status {
-      background: #10141e;
+    .status-select {
+      background: var(--bg-input);
       border: 1px solid var(--glass-border);
       color: #fff;
       padding: 6px 10px;
-      border-radius: 8px;
+      border-radius: var(--radius-sm);
       font-size: 12px;
+      font-weight: 700;
       outline: none;
       cursor: pointer;
     }
 
-    .btn-action-sm {
-      background: rgba(255, 255, 255, 0.06);
+    .action-icons {
+      display: flex;
+      gap: 6px;
+      align-items: center;
+    }
+
+    .btn-icon {
+      background: rgba(255, 255, 255, 0.05);
       border: 1px solid var(--glass-border);
       color: #fff;
       padding: 6px 10px;
-      border-radius: 8px;
-      font-size: 11px;
+      border-radius: var(--radius-sm);
+      font-size: 12px;
       font-weight: 700;
       cursor: pointer;
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      transition: all 0.2s;
-      text-decoration: none;
+      justify-content: center;
     }
 
-    .btn-action-sm:hover {
-      background: var(--accent);
+    .btn-icon:hover {
+      background: rgba(255, 255, 255, 0.12);
     }
 
-    .btn-notify-wa {
-      border-color: #25d366;
-      color: #25d366;
-      background: rgba(37, 211, 102, 0.08);
+    .btn-wa {
+      background: var(--whatsapp-glow);
+      border-color: rgba(37, 211, 102, 0.4);
+      color: var(--whatsapp);
     }
 
-    .btn-notify-wa:hover {
-      background: #25d366;
-      color: #fff;
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+
+    .menu-mgmt-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      gap: 16px;
     }
 
-    .ticket-paper {
-      background: #fff;
-      color: #000;
-      width: 320px;
-      padding: 20px;
-      border-radius: 8px;
-      font-family: 'Courier New', Courier, monospace;
-      font-size: 12px;
-      line-height: 1.4;
-      box-shadow: 0 10px 40px rgba(0,0,0,0.8);
-    }
+    #receipt-print-stage { display: none; }
 
-    @media (max-width: 900px) {
-      .admin-stats-grid {
-        grid-template-columns: repeat(2, 1fr);
-      }
-    }
-
-    @media (max-width: 600px) {
-      .admin-stats-grid {
-        grid-template-columns: 1fr;
-      }
-      .admin-toolbar {
-        flex-direction: column;
-        align-items: stretch;
-      }
-      .admin-filters {
-        overflow-x: auto;
+    @media print {
+      body * { visibility: hidden; }
+      #receipt-print-stage, #receipt-print-stage * { visibility: visible; }
+      #receipt-print-stage {
+        display: block !important;
+        position: absolute;
+        left: 0;
+        top: 0;
+        width: 80mm;
+        padding: 8px;
+        color: #000;
+        background: #fff;
+        font-family: monospace;
+        font-size: 12px;
       }
     }
   </style>
 </head>
 <body>
 
-  <!-- Admin Navigation Header -->
-  <header>
-    <a href="index.html" class="brand-logo">
-      <div class="logo-badge">PIZZA LAB</div>
-    </a>
-    <nav>
-      <ul>
-        <li><a href="index.html">Live Website</a></li>
-        <li><a href="menu.html">Formula Menu</a></li>
-        <li><a href="track.html">Public Tracking</a></li>
-        <li><a class="active">Karor Kitchen Hub</a></li>
-      </ul>
-    </nav>
-    <div class="nav-actions">
-      <button class="btn-action-sm" onclick="seedSampleOrder()" style="border-color: var(--accent);">+ Simulate New Order</button>
-      <button class="btn-action-sm" onclick="clearAllOrders()" style="color: #ff5252;">Clear Database</button>
+  <!-- Authentication Lock Gatekeeper -->
+  <script>
+    if (!sessionStorage.getItem('pizza_lab_admin_token')) {
+      window.location.replace('login.html?mode=staff');
+    }
+    function handleLogout() {
+      sessionStorage.removeItem('pizza_lab_admin_token');
+      window.location.href = 'login.html';
+    }
+  </script>
+
+  <!-- Admin Header -->
+  <header class="admin-header">
+    <div style="display: flex; align-items: center; gap: 12px;">
+      <div class="brand-logo">
+        <div class="logo-badge">PIZZA LAB</div>
+      </div>
+      <span class="hub-badge">Kitchen Hub</span>
+    </div>
+
+    <div class="top-controls">
+      <button type="button" class="btn-secondary" id="btn-audio-toggle" onclick="toggleKitchenAudio()" style="padding: 7px 14px; font-size: 12px;">
+        🔇 Sound: OFF
+      </button>
+
+      <div class="status-pill" id="cloud-pill">
+        <span class="dot"></span>
+        <span>Connecting Cloud...</span>
+      </div>
+
+      <button type="button" class="btn-secondary" onclick="simulateOrder()" style="padding: 7px 12px; font-size: 12px;">+ Test Order</button>
+      <button type="button" class="btn-secondary" onclick="promptClearOrders()" style="padding: 7px 12px; font-size: 12px; color: var(--danger); border-color: rgba(239,68,68,0.3);">🗑️ Clear</button>
+      <button type="button" class="btn-secondary" onclick="handleLogout()" style="padding: 7px 12px; font-size: 12px;">🚪 Logout</button>
     </div>
   </header>
 
-  <div class="admin-container">
-    <div style="display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 24px; flex-wrap: wrap; gap: 10px;">
-      <div>
-        <h1 class="section-heading" style="margin-bottom: 4px;">Kitchen Operations Hub</h1>
-        <p class="section-subtext" style="margin-bottom: 0;">Karor Lal Eason branch command center: real-time customer sync, WhatsApp pings & dispatch.</p>
+  <!-- Nav Tabs -->
+  <div class="tab-bar">
+    <button type="button" class="nav-tab-btn active" id="tab-orders" onclick="switchAdminTab('orders')">
+      📋 Live Orders <span class="nav-badge" id="badge-active-orders">0</span>
+    </button>
+    <button type="button" class="nav-tab-btn" id="tab-menu" onclick="switchAdminTab('menu')">
+      🍕 Menu Management
+    </button>
+    <button type="button" class="nav-tab-btn" id="tab-promos" onclick="switchAdminTab('promos')">
+      🎟️ Vouchers & Deals
+    </button>
+  </div>
+
+  <main class="page-container" style="padding-top: 24px;">
+
+    <!-- TAB 1: LIVE ORDERS DISPATCH -->
+    <div class="tab-content active" id="content-orders">
+      <div class="stats-grid">
+        <div class="stat-card">
+          <div class="stat-label">Total Today</div>
+          <div class="stat-val" id="stat-total">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">🔥 In Oven</div>
+          <div class="stat-val" style="color: var(--warning);" id="stat-oven">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">🛵 On The Way</div>
+          <div class="stat-val" style="color: var(--info);" id="stat-onway">0</div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-label">💰 Sales Total</div>
+          <div class="stat-val" style="color: var(--success);" id="stat-sales">Rs. 0</div>
+        </div>
       </div>
-      <div style="font-size: 12px; color: var(--accent); font-weight: 700;" id="live-clock">--:--:--</div>
+
+      <div class="filter-bar">
+        <div class="filter-pills">
+          <button type="button" class="filter-pill active" onclick="setAdminFilter('All', this)">All</button>
+          <button type="button" class="filter-pill" onclick="setAdminFilter('Received', this)">Received</button>
+          <button type="button" class="filter-pill" onclick="setAdminFilter('In Oven', this)">In Oven</button>
+          <button type="button" class="filter-pill" onclick="setAdminFilter('On Way', this)">On Way</button>
+          <button type="button" class="filter-pill" onclick="setAdminFilter('Delivered', this)">Delivered</button>
+          <button type="button" class="filter-pill" onclick="setAdminFilter('Cancelled', this)">Cancelled</button>
+        </div>
+
+        <input type="text" class="form-glow-control" id="order-search" style="width: 260px;" placeholder="Search ID, phone, or name..." oninput="handleAdminSearch(this.value)" />
+      </div>
+
+      <div class="table-panel">
+        <div class="table-wrapper">
+          <table>
+            <thead>
+              <tr>
+                <th>Order ID / Time</th>
+                <th>Customer Details</th>
+                <th>Formulas Ordered</th>
+                <th>Total / Method</th>
+                <th>Kitchen Status</th>
+                <th>Actions</th>
+              </tr>
+            </thead>
+            <tbody id="orders-table-body">
+              <tr>
+                <td colspan="6" style="text-align: center; color: var(--text-muted); padding: 40px;">
+                  Connecting to Pizza Lab Realtime Cloud Database...
+                </td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
 
-    <!-- Live Metric Counters -->
-    <div class="admin-stats-grid">
-      <div class="stat-card">
-        <span class="stat-label">Total Orders Logged</span>
-        <span class="stat-val" id="stat-total">0</span>
+    <!-- TAB 2: MENU MANAGEMENT -->
+    <div class="tab-content" id="content-menu">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+          <h2 style="font-size: 20px; font-weight: 800;">Menu Catalog (Karor Branch)</h2>
+          <p style="font-size: 12.5px; color: var(--text-muted);">Toggle availability, modify base formulas, or add items instantly.</p>
+        </div>
+        <button type="button" class="btn-primary" onclick="openAddMenuModal()">+ Add New Pizza / Formula</button>
       </div>
-      <div class="stat-card">
-        <span class="stat-label">In Kitchen (Baking)</span>
-        <span class="stat-val" style="color: #ffaa00;" id="stat-baking">0</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label">On Rider Bikes</span>
-        <span class="stat-val" style="color: #60a5fa;" id="stat-onway">0</span>
-      </div>
-      <div class="stat-card">
-        <span class="stat-label">Gross Revenue (Rs.)</span>
-        <span class="stat-val" style="color: var(--whatsapp);" id="stat-sales">Rs. 0</span>
-      </div>
+      <div class="menu-mgmt-grid" id="menu-mgmt-grid"></div>
     </div>
 
-    <!-- Filters & Search Toolbar -->
-    <div class="admin-toolbar">
-      <div class="admin-filters">
-        <button class="filter-btn active" onclick="filterOrders('ALL', this)">All Orders</button>
-        <button class="filter-btn" onclick="filterOrders('Received', this)">New (Received)</button>
-        <button class="filter-btn" onclick="filterOrders('In Oven', this)">In Oven</button>
-        <button class="filter-btn" onclick="filterOrders('On Way', this)">Out for Delivery</button>
-        <button class="filter-btn" onclick="filterOrders('Delivered', this)">Delivered</button>
+    <!-- TAB 3: PROMOS & VOUCHERS -->
+    <div class="tab-content" id="content-promos">
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+        <div>
+          <h2 style="font-size: 20px; font-weight: 800;">Vouchers & Discount Formulas</h2>
+          <p style="font-size: 12.5px; color: var(--text-muted);">Manage customer voucher codes for checkout discounts.</p>
+        </div>
+        <button type="button" class="btn-primary" onclick="openAddPromoModal()">+ Add Promo Voucher</button>
       </div>
-      <div>
-        <input type="text" id="order-search" class="form-glow-control" placeholder="Search by Phone, Name or Order ID..." oninput="renderOrdersTable()" style="width: 260px; padding: 8px 14px; font-size: 12px;" />
-      </div>
+      <div class="menu-mgmt-grid" id="promos-mgmt-grid"></div>
     </div>
 
-    <!-- Orders Data Table -->
-    <div class="table-container">
-      <table class="orders-table">
-        <thead>
-          <tr>
-            <th>Order ID</th>
-            <th>Customer & Contact</th>
-            <th>Address & Rider GPS</th>
-            <th>Formula Items</th>
-            <th>Total Bill</th>
-            <th>Payment Route</th>
-            <th>Live Status (Syncs Customer)</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-        <tbody id="orders-table-body">
-          <!-- Dynamically Injected -->
-        </tbody>
-      </table>
+  </main>
+
+  <!-- Detail Modal -->
+  <div class="modal-overlay" id="order-detail-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3 id="modal-order-title">Order Details</h3>
+        <button class="modal-close" onclick="closeOrderModal()">&times;</button>
+      </div>
+      <div id="modal-order-content"></div>
     </div>
   </div>
 
-  <!-- Kitchen Thermal Slip Modal -->
-  <div class="modal-overlay" id="ticket-modal">
-    <div style="display: flex; flex-direction: column; align-items: center; gap: 12px;">
-      <div class="ticket-paper" id="ticket-print-target">
-        <div style="text-align: center; border-bottom: 1px dashed #000; padding-bottom: 8px; margin-bottom: 8px;">
-          <strong style="font-size: 14px;">PIZZA LAB - KAROR KITCHEN</strong><br>
-          <span style="font-size: 11px;">0308-0671101 | Karor Lal Eason</span><br>
-          <span id="pos-order-id" style="font-weight: bold;">#PL-0000</span> | <span id="pos-time">--:--</span>
-        </div>
-        <div style="margin-bottom: 8px; font-size: 11.5px;">
-          <strong>Customer:</strong> <span id="pos-name"></span><br>
-          <strong>Phone:</strong> <span id="pos-phone"></span><br>
-          <strong>Address:</strong> <span id="pos-addr"></span><br>
-          <strong>Payment:</strong> <span id="pos-method"></span>
-        </div>
-        <div style="border-top: 1px dashed #000; border-bottom: 1px dashed #000; padding: 8px 0; margin-bottom: 8px;" id="pos-items"></div>
-        <div style="display: flex; justify-content: space-between; font-weight: bold; font-size: 13px;">
-          <span>TOTAL BILL:</span>
-          <span id="pos-total"></span>
-        </div>
+  <!-- Add Menu Modal -->
+  <div class="modal-overlay" id="add-menu-modal">
+    <div class="modal-box">
+      <div class="modal-header">
+        <h3>Add New Formula to Menu</h3>
+        <button class="modal-close" onclick="closeAddMenuModal()">&times;</button>
       </div>
-      <div style="display: flex; gap: 8px;">
-        <button class="btn-primary" onclick="printThermalTicket()">🖨️ Print Kitchen Slip</button>
-        <button class="btn-action-sm" onclick="closeTicketModal()">Close</button>
-      </div>
+      <form onsubmit="handleSaveNewMenuItem(event)">
+        <div class="input-glow-group">
+          <label>Item Name *</label>
+          <input type="text" id="new-item-name" class="form-glow-control" required />
+        </div>
+        <div class="input-glow-group">
+          <label>Category *</label>
+          <select id="new-item-cat" class="status-select" style="width: 100%; padding: 10px;">
+            <option value="Signature Pizza">Signature Pizza</option>
+            <option value="Special Pizza">Special Pizza</option>
+            <option value="Square Pizza">Square Pizza</option>
+            <option value="Deals & Combos">Deals & Combos</option>
+          </select>
+        </div>
+        <div class="input-glow-group">
+          <label>Description</label>
+          <textarea id="new-item-desc" class="form-glow-control" style="height: 60px; resize: none;"></textarea>
+        </div>
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 16px;">
+          <div>
+            <label style="font-size: 11px; font-weight: 700; color: var(--text-muted);">Small / Base Price (Rs.) *</label>
+            <input type="number" id="new-item-price-s" class="form-glow-control" required />
+          </div>
+          <div>
+            <label style="font-size: 11px; font-weight: 700; color: var(--text-muted);">Large Price (Rs.)</label>
+            <input type="number" id="new-item-price-l" class="form-glow-control" />
+          </div>
+        </div>
+        <button type="submit" class="btn-primary" style="width: 100%;">Save to Live Menu</button>
+      </form>
     </div>
   </div>
 
+  <!-- Hidden Stage for 80mm POS Slip Printing -->
+  <div id="receipt-print-stage"></div>
+
+  <!-- Firebase Scripts -->
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
+  <script src="firebase-config.js"></script>
   <script src="menu-data.js"></script>
+
   <script>
-    let currentFilter = 'ALL';
-    let previousCount = 0;
+    let ordersCache = [];
+    let activeFilter = 'All';
+    let activeSearch = '';
+    let isKitchenAudioEnabled = false;
+    let audioContext = null;
+    let initialOrdersLoaded = false;
 
-    function playOrderChime() {
-      try {
-        const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
-        const osc = audioCtx.createOscillator();
-        const gain = audioCtx.createGain();
-        osc.connect(gain);
-        gain.connect(audioCtx.destination);
-        osc.type = 'triangle';
-        osc.frequency.setValueAtTime(440, audioCtx.currentTime);
-        osc.frequency.exponentialRampToValueAtTime(880, audioCtx.currentTime + 0.3);
-        gain.gain.setValueAtTime(0.2, audioCtx.currentTime);
-        gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + 0.4);
-        osc.start();
-        osc.stop(audioCtx.currentTime + 0.4);
-      } catch(e) {}
-    }
-
-    function getOrdersList() {
-      const stored = localStorage.getItem('pizza_lab_all_orders');
-      if (stored) return JSON.parse(stored);
-
-      const single = localStorage.getItem('pizza_lab_last_order');
-      if (single) {
-        const parsed = JSON.parse(single);
-        parsed.status = parsed.status || 'Received';
-        return [parsed];
+    // Web Audio Chime
+    function toggleKitchenAudio() {
+      const btn = document.getElementById('btn-audio-toggle');
+      if (!isKitchenAudioEnabled) {
+        try {
+          const AudioContextClass = window.AudioContext || window.webkitAudioContext;
+          if (AudioContextClass) {
+            audioContext = new AudioContextClass();
+            if (audioContext.state === 'suspended') audioContext.resume();
+          }
+          isKitchenAudioEnabled = true;
+          btn.innerText = "🔔 Sound: ON";
+          btn.style.color = "var(--success)";
+          btn.style.borderColor = "var(--success)";
+          playChime();
+        } catch (e) {
+          console.error("Audio init error:", e);
+        }
+      } else {
+        isKitchenAudioEnabled = false;
+        btn.innerText = "🔇 Sound: OFF";
+        btn.style.color = "";
+        btn.style.borderColor = "";
       }
-      return [];
     }
 
-    function saveOrdersList(orders) {
-      localStorage.setItem('pizza_lab_all_orders', JSON.stringify(orders));
-      renderOrdersTable();
-      updateMetrics(orders);
+    function playChime() {
+      if (!isKitchenAudioEnabled || !audioContext) return;
+      try {
+        if (audioContext.state === 'suspended') audioContext.resume();
+        const now = audioContext.currentTime;
+        const osc = audioContext.createOscillator();
+        const gain = audioContext.createGain();
+        osc.connect(gain);
+        gain.connect(audioContext.destination);
+
+        osc.frequency.setValueAtTime(587.33, now);
+        osc.frequency.setValueAtTime(880.00, now + 0.12);
+        gain.gain.setValueAtTime(0.15, now);
+        gain.gain.exponentialRampToValueAtTime(0.0001, now + 0.4);
+
+        osc.start(now);
+        osc.stop(now + 0.4);
+      } catch (e) {}
     }
 
-    function renderOrdersTable() {
-      const orders = getOrdersList();
-      const tbody = document.getElementById('orders-table-body');
-      const searchQuery = (document.getElementById('order-search')?.value || '').toLowerCase().trim();
+    // Tabs
+    function switchAdminTab(tab) {
+      document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+      document.querySelectorAll('.nav-tab-btn').forEach(b => b.classList.remove('active'));
 
-      tbody.innerHTML = '';
+      document.getElementById('content-' + tab).classList.add('active');
+      document.getElementById('tab-' + tab).classList.add('active');
 
-      if (orders.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="8" style="text-align:center; padding: 40px; color: var(--text-muted);">No orders in database. Simulate an order or order from the menu to test.</td></tr>`;
-        updateMetrics([]);
+      if (tab === 'menu') renderMenuManager();
+      if (tab === 'promos') renderPromoManager();
+    }
+
+    // Firebase Listener
+    function initAdminCloud(retries = 15) {
+      const pill = document.getElementById('cloud-pill');
+
+      if (!window.cloudDb) {
+        if (retries > 0) {
+          setTimeout(() => initAdminCloud(retries - 1), 300);
+          return;
+        }
+        if (pill) {
+          pill.innerHTML = '<span class="dot" style="background:#ef4444;box-shadow:0 0 8px #ef4444;"></span><span>Local Mode</span>';
+          pill.style.color = '#ef4444';
+        }
+        ordersCache = JSON.parse(localStorage.getItem('pizza_lab_all_orders') || '[]');
+        renderOrders();
         return;
       }
 
-      const filtered = orders.filter(o => {
-        const matchesStatus = (currentFilter === 'ALL') || (o.status === currentFilter);
-        const matchesSearch = !searchQuery || 
-          (o.orderId && o.orderId.toLowerCase().includes(searchQuery)) ||
-          (o.phone && o.phone.toLowerCase().includes(searchQuery)) ||
-          (o.name && o.name.toLowerCase().includes(searchQuery));
-        return matchesStatus && matchesSearch;
+      window.cloudDb.ref('orders').on('value', snap => {
+        const val = snap.val();
+        const newOrders = val ? Object.values(val).sort((a, b) => (b.timestamp || 0) - (a.timestamp || 0)) : [];
+
+        if (initialOrdersLoaded && newOrders.length > ordersCache.length) {
+          playChime();
+        }
+        initialOrdersLoaded = true;
+
+        ordersCache = newOrders;
+        localStorage.setItem('pizza_lab_all_orders', JSON.stringify(ordersCache));
+        renderOrders();
+      }, err => {
+        console.error("Firebase read error:", err);
       });
+    }
 
-      filtered.forEach((order) => {
-        const itemsDetail = (order.cart || []).map(i => `<div style="font-size:12px;"><strong>${i.name}</strong> <span style="color:var(--text-muted);font-size:10.5px;">(${i.variant})</span></div>`).join('');
+    // Orders Rendering
+    function setAdminFilter(f, btn) {
+      activeFilter = f;
+      document.querySelectorAll('.filter-pill').forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      renderOrders();
+    }
 
-        const riderMapButton = order.riderGps ? 
-          `<a href="${order.riderGps}" target="_blank" class="btn-rider-map">📍 Open Rider GPS</a>` : '';
+    function handleAdminSearch(val) {
+      activeSearch = val.toLowerCase().trim();
+      renderOrders();
+    }
 
+    function renderOrders() {
+      const tbody = document.getElementById('orders-table-body');
+      if (!tbody) return;
+
+      let filtered = ordersCache;
+      if (activeFilter !== 'All') {
+        filtered = filtered.filter(o => o.status === activeFilter);
+      }
+
+      if (activeSearch) {
+        filtered = filtered.filter(o =>
+          (o.orderId && o.orderId.toLowerCase().includes(activeSearch)) ||
+          (o.name && o.name.toLowerCase().includes(activeSearch)) ||
+          (o.phone && o.phone.includes(activeSearch))
+        );
+      }
+
+      if (filtered.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="6" style="text-align: center; color: var(--text-muted); padding: 40px;">No matching orders in queue.</td></tr>';
+        updateStats();
+        return;
+      }
+
+      tbody.innerHTML = '';
+      filtered.forEach(order => {
         const tr = document.createElement('tr');
+        const cleanId = order.cleanId || (order.orderId ? order.orderId.replace('#', '') : 'N/A');
+
+        const itemsTags = (order.cart || []).map(item =>
+          `<div class="item-tag"><strong>${item.name}</strong> <span style="color:var(--text-muted)">(${item.variant || ''})</span></div>`
+        ).join('') || '<span style="color:var(--text-muted)">No items</span>';
+
+        const rawPhone = (order.phone || '').replace(/\D/g, '');
+        const waNum = rawPhone.startsWith('0') ? '92' + rawPhone.slice(1) : rawPhone;
+        const waMsg = encodeURIComponent(`Assalam-o-Alaikum ${order.name || ''}, Pizza Lab Karor: Your order ${order.orderId || ''} status is now: ${order.status || 'Received'}.`);
+
         tr.innerHTML = `
           <td>
-            <strong style="color: var(--accent);">${order.orderId || '#PL-0000'}</strong>
-            <div style="font-size:10px; color:var(--text-muted);">${order.dateStr || 'Just now'}</div>
+            <div class="order-id-link" onclick="openOrderModal('${cleanId}')">${order.orderId || ('#' + cleanId)}</div>
+            <div style="font-size:11px;color:var(--text-muted);margin-top:2px;">${order.dateStr || ''}</div>
           </td>
           <td>
             <div style="font-weight:700;">${order.name || 'Guest'}</div>
-            <div style="font-size:11px; color:var(--text-muted);">${order.phone || 'N/A'}</div>
+            <div style="font-size:11.5px;color:var(--text-muted);">📞 ${order.phone || 'N/A'}</div>
+            <div style="font-size:11.5px;color:var(--text-muted);">🏠 ${order.address || 'Karor'}</div>
+          </td>
+          <td style="max-width:280px;">${itemsTags}</td>
+          <td>
+            <div style="font-weight:800;color:var(--accent);">Rs. ${order.grandTotal || 0}</div>
+            <div style="font-size:11.5px;color:var(--text-muted);">${order.selectedPayment || 'COD'}</div>
           </td>
           <td>
-            <div style="max-width:200px; font-size:11.5px; color:#cbd5e1;">${order.address || 'Self-Pickup'}</div>
-            ${riderMapButton}
-          </td>
-          <td>${itemsDetail || 'No items'}</td>
-          <td><strong style="color:#fff; font-size:14px;">Rs. ${order.grandTotal || order.total || 0}</strong></td>
-          <td><span style="font-size:11px; font-weight:700; color:#cbd5e1;">${order.selectedPayment || 'COD'}</span></td>
-          <td>
-            <select class="select-status" onchange="changeOrderStatus('${order.orderId}', this.value)">
-              <option value="Received" ${(order.status === 'Received' || !order.status) ? 'selected' : ''}>Received</option>
-              <option value="In Oven" ${order.status === 'In Oven' ? 'selected' : ''}>In Oven (Baking)</option>
-              <option value="On Way" ${order.status === 'On Way' ? 'selected' : ''}>On Way (Rider)</option>
-              <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>Delivered</option>
-              <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>Cancelled</option>
+            <select class="status-select" onchange="updateStatus('${cleanId}', this.value)">
+              <option value="Received" ${order.status === 'Received' ? 'selected' : ''}>Received</option>
+              <option value="In Oven" ${order.status === 'In Oven' ? 'selected' : ''}>🔥 In Oven</option>
+              <option value="On Way" ${order.status === 'On Way' ? 'selected' : ''}>🛵 On Way</option>
+              <option value="Delivered" ${order.status === 'Delivered' ? 'selected' : ''}>✔ Delivered</option>
+              <option value="Cancelled" ${order.status === 'Cancelled' ? 'selected' : ''}>✖ Cancelled</option>
             </select>
           </td>
           <td>
-            <div style="display: flex; gap: 6px; align-items: center;">
-              <button class="btn-action-sm btn-notify-wa" onclick="sendWhatsAppStatusNotification('${order.orderId}')" title="Send Status on WhatsApp">
-                💬 Ping
-              </button>
-              <button class="btn-action-sm" onclick="openKitchenTicket('${order.orderId}')">Slip 📄</button>
+            <div class="action-icons">
+              <a href="https://wa.me/${waNum}?text=${waMsg}" target="_blank" class="btn-icon btn-wa" title="WhatsApp Customer">💬</a>
+              <button class="btn-icon" onclick="printSlip('${cleanId}')" title="Print POS Slip">🖨️</button>
+              <button class="btn-icon" onclick="openOrderModal('${cleanId}')" title="Inspect">🔍</button>
             </div>
           </td>
         `;
+
         tbody.appendChild(tr);
       });
 
-      updateMetrics(orders);
+      updateStats();
     }
 
-    // Status change with immediate customer session sync
-    function changeOrderStatus(orderId, newStatus) {
-      const orders = getOrdersList();
-      const target = orders.find(o => o.orderId === orderId);
-      if (target) {
-        target.status = newStatus;
-        saveOrdersList(orders);
-
-        // Also update the active customer session cache
-        const lastOrder = JSON.parse(localStorage.getItem('pizza_lab_last_order') || '{}');
-        if (lastOrder.orderId === orderId) {
-          lastOrder.status = newStatus;
-          localStorage.setItem('pizza_lab_last_order', JSON.stringify(lastOrder));
-        }
-      }
-    }
-
-    // 1-Click WhatsApp Status Notification to Customer
-    function sendWhatsAppStatusNotification(orderId) {
-      const orders = getOrdersList();
-      const order = orders.find(o => o.orderId === orderId);
-      if (!order) return;
-
-      let cleanPhone = (order.phone || '').replace(/[^0-9]/g, '');
-      if (cleanPhone.startsWith('0')) {
-        cleanPhone = '92' + cleanPhone.substring(1);
-      } else if (!cleanPhone.startsWith('92')) {
-        cleanPhone = '92' + cleanPhone;
+    function updateStatus(cleanId, status) {
+      if (window.cloudDb) {
+        window.cloudDb.ref('orders/' + cleanId).update({ status: status });
       }
 
-      let statusMsg = '';
-      if (order.status === 'In Oven') {
-        statusMsg = `🔥 Great news! Your order *${order.orderId}* is currently baking in our stone oven at Pizza Lab Karor.`;
-      } else if (order.status === 'On Way') {
-        statusMsg = `🛵 Your food is hot & ready! Rider has departed with your order *${order.orderId}* to *${order.address}*. Please keep Rs. ${order.grandTotal} ready if paying Cash on Delivery.`;
-      } else if (order.status === 'Delivered') {
-        statusMsg = `🍕 Order *${order.orderId}* marked as delivered. Thank you for choosing Pizza Lab Karor! We hope you love the taste.`;
-      } else {
-        statusMsg = `👋 Salam ${order.name}! Your Pizza Lab order *${order.orderId}* is verified and queued at our Karor kitchen.`;
+      const match = ordersCache.find(o => o.cleanId === cleanId || o.orderId === '#' + cleanId);
+      if (match) {
+        match.status = status;
+        localStorage.setItem('pizza_lab_all_orders', JSON.stringify(ordersCache));
       }
-
-      const fullMessage = `${statusMsg}\n\n📍 *Kitchen Hotline:* 0308-0671101\nTrack anytime: https://pizzalab.pk/track.html?id=${encodeURIComponent(order.orderId)}`;
-
-      window.open(`https://wa.me/${cleanPhone}?text=${encodeURIComponent(fullMessage)}`, '_blank');
+      updateStats();
     }
 
-    function filterOrders(status, btn) {
-      currentFilter = status;
-      document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
-      btn.classList.add('active');
-      renderOrdersTable();
-    }
+    function updateStats() {
+      const total = ordersCache.length;
+      const oven = ordersCache.filter(o => o.status === 'In Oven').length;
+      const onway = ordersCache.filter(o => o.status === 'On Way').length;
+      const active = ordersCache.filter(o => o.status === 'Received' || o.status === 'In Oven' || o.status === 'On Way').length;
+      const sales = ordersCache
+        .filter(o => o.status !== 'Cancelled')
+        .reduce((sum, o) => sum + (Number(o.grandTotal) || 0), 0);
 
-    function updateMetrics(orders) {
-      document.getElementById('stat-total').innerText = orders.length;
-      document.getElementById('stat-baking').innerText = orders.filter(o => o.status === 'In Oven').length;
-      document.getElementById('stat-onway').innerText = orders.filter(o => o.status === 'On Way').length;
-      
-      const sales = orders.reduce((sum, cur) => sum + Number(cur.grandTotal || cur.total || 0), 0);
+      document.getElementById('stat-total').innerText = total;
+      document.getElementById('stat-oven').innerText = oven;
+      document.getElementById('stat-onway').innerText = onway;
       document.getElementById('stat-sales').innerText = 'Rs. ' + sales.toLocaleString();
+      document.getElementById('badge-active-orders').innerText = active;
     }
 
-    function openKitchenTicket(orderId) {
-      const orders = getOrdersList();
-      const order = orders.find(o => o.orderId === orderId);
+    // Modals
+    function openOrderModal(cleanId) {
+      const order = ordersCache.find(o => o.cleanId === cleanId || o.orderId === '#' + cleanId);
       if (!order) return;
 
-      document.getElementById('pos-order-id').innerText = order.orderId;
-      document.getElementById('pos-time').innerText = order.dateStr || new Date().toLocaleTimeString();
-      document.getElementById('pos-name').innerText = order.name || 'Guest';
-      document.getElementById('pos-phone').innerText = order.phone || 'N/A';
-      document.getElementById('pos-addr').innerText = order.address || 'Self-Pickup';
-      document.getElementById('pos-method').innerText = order.selectedPayment || 'COD';
-      document.getElementById('pos-total').innerText = 'Rs. ' + (order.grandTotal || 0);
+      const modal = document.getElementById('order-detail-modal');
+      const box = document.getElementById('modal-order-content');
+      document.getElementById('modal-order-title').innerText = order.orderId || ('#' + cleanId);
 
-      const itemsBox = document.getElementById('pos-items');
-      itemsBox.innerHTML = (order.cart || []).map(i => `
-        <div style="display:flex; justify-content:space-between; margin-bottom: 4px;">
-          <span>${i.name} (${i.variant})</span>
+      const itemsHtml = (order.cart || []).map(i => `
+        <div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid var(--glass-border);font-size:13px;">
+          <div>
+            <strong>${i.name}</strong>
+            <div style="color:var(--text-muted);font-size:11px;">${i.variant || ''}</div>
+          </div>
+          <div style="font-weight:700;color:var(--accent);">Rs. ${i.price}</div>
+        </div>
+      `).join('');
+
+      box.innerHTML = `
+        <p style="color:var(--text-muted);font-size:12px;margin-bottom:14px;">Placed: ${order.dateStr || ''}</p>
+        <div style="background:rgba(0,0,0,0.3);border:1px solid var(--glass-border);border-radius:var(--radius-md);padding:14px;margin-bottom:14px;font-size:13px;">
+          <div><strong>Customer:</strong> ${order.name || 'Guest'}</div>
+          <div style="margin-top:4px;"><strong>Phone:</strong> ${order.phone || 'N/A'}</div>
+          <div style="margin-top:4px;"><strong>Address:</strong> ${order.address || 'Karor'}</div>
+          ${order.riderGps ? `<div style="margin-top:6px;"><a href="${order.riderGps}" target="_blank" style="color:var(--info);font-size:12px;">📍 Open Customer GPS Pin</a></div>` : ''}
+          ${order.notes ? `<div style="margin-top:8px;color:var(--warning);"><strong>Notes:</strong> ${order.notes}</div>` : ''}
+        </div>
+        <div style="margin-bottom:14px;">${itemsHtml}</div>
+        <div style="border-top:1px dashed var(--glass-border);padding-top:12px;font-size:13px;">
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Subtotal:</span><span>Rs. ${order.subtotal || 0}</span></div>
+          <div style="display:flex;justify-content:space-between;margin-bottom:4px;"><span>Delivery Fee:</span><span>Rs. ${order.deliveryFee || 0}</span></div>
+          <div style="display:flex;justify-content:space-between;font-size:16px;font-weight:800;color:#fff;margin-top:6px;">
+            <span>Grand Total:</span>
+            <span style="color:var(--accent);">Rs. ${order.grandTotal || 0}</span>
+          </div>
+        </div>
+        <button type="button" onclick="printSlip('${cleanId}')" class="btn-primary" style="width:100%;margin-top:16px;">
+          🖨️ Print 80mm POS Slip
+        </button>
+      `;
+
+      modal.classList.add('open');
+    }
+
+    function closeOrderModal() {
+      document.getElementById('order-detail-modal').classList.remove('open');
+    }
+
+    // 80mm POS Slip Printer
+    function printSlip(cleanId) {
+      const order = ordersCache.find(o => o.cleanId === cleanId || o.orderId === '#' + cleanId);
+      if (!order) return;
+
+      const printStage = document.getElementById('receipt-print-stage');
+      const itemsList = (order.cart || []).map(i => `
+        <div style="display:flex;justify-content:space-between;margin:3px 0;">
+          <span>${i.name} (${i.variant || ''})</span>
           <span>Rs. ${i.price}</span>
         </div>
       `).join('');
 
-      document.getElementById('ticket-modal').classList.add('open');
+      printStage.innerHTML = `
+        <div style="text-align:center;margin-bottom:8px;">
+          <h2 style="margin:0;font-size:18px;">PIZZA LAB</h2>
+          <div style="font-size:11px;">Karor Lal Eason Branch</div>
+          <div style="font-size:10px;">Hotline: 0308-0671101</div>
+        </div>
+        <div style="border-top:1px dashed #000;border-bottom:1px dashed #000;padding:6px 0;margin:6px 0;font-size:11px;">
+          <div><strong>Order:</strong> ${order.orderId || ('#' + cleanId)}</div>
+          <div><strong>Date:</strong> ${order.dateStr || ''}</div>
+          <div><strong>Customer:</strong> ${order.name || 'Guest'}</div>
+          <div><strong>Phone:</strong> ${order.phone || ''}</div>
+          <div><strong>Address:</strong> ${order.address || ''}</div>
+          <div><strong>Payment:</strong> ${order.selectedPayment || 'COD'}</div>
+        </div>
+        <div style="margin:8px 0;font-size:11px;">${itemsList}</div>
+        <div style="border-top:1px dashed #000;padding-top:6px;margin-top:6px;font-size:12px;font-weight:bold;display:flex;justify-content:space-between;">
+          <span>GRAND TOTAL:</span>
+          <span>Rs. ${order.grandTotal || 0}</span>
+        </div>
+        <div style="text-align:center;font-size:10px;margin-top:12px;">*** Kitchen Copy ***</div>
+      `;
+
+      window.print();
     }
 
-    function closeTicketModal() {
-      document.getElementById('ticket-modal').classList.remove('open');
+    // Menu Management
+    function renderMenuManager() {
+      const grid = document.getElementById('menu-mgmt-grid');
+      if (!grid) return;
+
+      const menu = (typeof getLiveMenu === 'function') ? getLiveMenu() : (window.rawBaselineMenu || []);
+      grid.innerHTML = '';
+
+      menu.forEach(item => {
+        const isAvail = (typeof item.available === 'undefined') ? true : item.available;
+        const pricesText = Object.entries(item.prices || {}).map(([k, v]) => `${k}: Rs. ${v}`).join(' | ');
+
+        const card = document.createElement('div');
+        card.className = 'glass-panel';
+        card.style.padding = '18px';
+        card.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:flex-start;">
+            <span class="menu-card-cat">${item.category}</span>
+            <button type="button" onclick="toggleStock(${item.id})" class="btn-secondary" style="padding:4px 8px;font-size:11px;${isAvail ? 'color:var(--success);' : 'color:var(--danger);'}">
+              ${isAvail ? '● Available' : '✖ Sold Out'}
+            </button>
+          </div>
+          <h4 style="font-size:15px;font-weight:800;margin:6px 0 4px;">${item.name}</h4>
+          <p style="font-size:12px;color:var(--text-muted);">${item.desc}</p>
+          <div style="border-top:1px solid var(--glass-border);padding-top:10px;margin-top:12px;display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:12px;font-weight:700;color:#fff;">${pricesText}</span>
+            <button type="button" onclick="deleteMenuItemPrompt(${item.id})" style="background:none;border:none;color:var(--danger);cursor:pointer;font-size:16px;">🗑️</button>
+          </div>
+        `;
+        grid.appendChild(card);
+      });
     }
 
-    function printThermalTicket() {
-      const ticket = document.getElementById('ticket-print-target').outerHTML;
-      const win = window.open('', '_blank', 'width=400,height=600');
-      win.document.write(`
-        <html>
-          <head><title>Kitchen POS Ticket</title></head>
-          <body style="margin:0; padding:10px; font-family:'Courier New', monospace;">
-            ${ticket}
-            <script>window.onload = function() { window.print(); window.close(); };<\/script>
-          </body>
-        </html>
-      `);
-      win.document.close();
+    function toggleStock(id) {
+      const menu = getLiveMenu();
+      const match = menu.find(i => i.id === Number(id));
+      if (match) {
+        match.available = !(typeof match.available === 'undefined' ? true : match.available);
+        saveLiveMenu(menu);
+        renderMenuManager();
+      }
     }
 
-    function seedSampleOrder() {
-      const orders = getOrdersList();
-      const newId = '#PL-' + Math.floor(1000 + Math.random() * 9000);
-      const sample = {
-        orderId: newId,
-        dateStr: new Date().toLocaleDateString() + ' ' + new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
-        name: 'Usman Ghani',
-        phone: '03080671101',
-        address: 'Ward #4, Near Railway Road, Karor Lal Eason',
-        riderGps: 'https://www.google.com/maps/search/?api=1&query=Karor+Lal+Eason',
-        selectedPayment: 'WhatsApp',
-        status: 'Received',
-        grandTotal: 1750,
+    function deleteMenuItemPrompt(id) {
+      if (confirm("Remove this formula from the live menu?")) {
+        deleteMenuItem(id);
+        renderMenuManager();
+      }
+    }
+
+    function openAddMenuModal() {
+      document.getElementById('add-menu-modal').classList.add('open');
+    }
+
+    function closeAddMenuModal() {
+      document.getElementById('add-menu-modal').classList.remove('open');
+    }
+
+    function handleSaveNewMenuItem(e) {
+      e.preventDefault();
+      const name = document.getElementById('new-item-name').value.trim();
+      const cat = document.getElementById('new-item-cat').value;
+      const desc = document.getElementById('new-item-desc').value.trim();
+      const priceS = Number(document.getElementById('new-item-price-s').value) || 0;
+      const priceL = Number(document.getElementById('new-item-price-l').value) || 0;
+
+      const prices = { Small: priceS };
+      if (priceL > 0) prices.Large = priceL;
+
+      addMenuItem({ name, category: cat, desc, prices, available: true });
+      closeAddMenuModal();
+      renderMenuManager();
+      e.target.reset();
+    }
+
+    // Promos
+    function renderPromoManager() {
+      const grid = document.getElementById('promos-mgmt-grid');
+      if (!grid) return;
+
+      const promos = (typeof window.DEFAULT_PROMOS !== 'undefined') ? window.DEFAULT_PROMOS : [];
+      grid.innerHTML = '';
+
+      promos.forEach((p, idx) => {
+        const card = document.createElement('div');
+        card.className = 'glass-panel';
+        card.style.padding = '18px';
+        card.innerHTML = `
+          <div style="display:flex;justify-content:space-between;align-items:center;">
+            <span style="font-size:16px;font-weight:800;color:var(--accent);">🎟️ ${p.code}</span>
+            <span style="font-size:11px;font-weight:700;color:${p.active ? 'var(--success)' : 'var(--danger)'}">
+              ${p.active ? '● Active' : '✖ Inactive'}
+            </span>
+          </div>
+          <div style="font-size:13px;margin-top:8px;">
+            Discount: <strong>${p.type === 'percentage' ? p.value + '% OFF' : 'Rs. ' + p.value + ' OFF'}</strong>
+          </div>
+          <div style="font-size:11.5px;color:var(--text-muted);margin-top:2px;">
+            Min Order: Rs. ${p.minOrder || 0}
+          </div>
+        `;
+        grid.appendChild(card);
+      });
+    }
+
+    function openAddPromoModal() {
+      const code = prompt("Enter Promo Code (e.g. KAROR15):");
+      if (!code) return;
+      const discount = Number(prompt("Enter discount percentage:")) || 10;
+      const min = Number(prompt("Enter minimum order amount (Rs.):")) || 500;
+
+      window.DEFAULT_PROMOS.push({ code: code.toUpperCase().trim(), type: 'percentage', value: discount, minOrder: min, active: true });
+      renderPromoManager();
+    }
+
+    // Simulation
+    function simulateOrder() {
+      const idNum = Math.floor(1000 + Math.random() * 9000);
+      const testOrder = {
+        orderId: "#PL-" + idNum,
+        cleanId: "PL-" + idNum,
+        timestamp: Date.now(),
+        dateStr: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }),
+        name: "Test Customer (" + idNum + ")",
+        phone: "03080671101",
+        address: "Railway Road, Karor Lal Eason",
+        selectedPayment: "Cash on Delivery",
+        subtotal: 1350,
+        deliveryFee: 100,
+        grandTotal: 1450,
+        status: "Received",
         cart: [
-          { name: 'Kabab Crust Pizza', variant: 'Large | Kabab Crust | Hot & Spicy', price: 1650 },
-          { name: 'Special Mayo Dip', variant: 'Addon', price: 100 }
+          { name: "Kabab Crust Pizza", variant: "Medium | Spicy", price: 1350 }
         ]
       };
 
-      orders.unshift(sample);
-      saveOrdersList(orders);
-      playOrderChime();
-    }
-
-    function clearAllOrders() {
-      if (confirm("Clear all recorded order history?")) {
-        localStorage.removeItem('pizza_lab_all_orders');
-        localStorage.removeItem('pizza_lab_last_order');
-        renderOrdersTable();
+      if (window.cloudDb) {
+        window.cloudDb.ref('orders/PL-' + idNum).set(testOrder);
+      } else {
+        ordersCache.unshift(testOrder);
+        renderOrders();
       }
     }
 
-    setInterval(() => {
-      const now = new Date();
-      const clock = document.getElementById('live-clock');
-      if (clock) clock.innerText = now.toLocaleTimeString();
-    }, 1000);
-
-    renderOrdersTable();
-    setInterval(() => {
-      const orders = getOrdersList();
-      if (orders.length > previousCount) {
-        if (previousCount > 0) playOrderChime();
-        previousCount = orders.length;
-        renderOrdersTable();
+    function promptClearOrders() {
+      if (confirm("Clear completed orders from list?")) {
+        ordersCache = ordersCache.filter(o => o.status !== 'Delivered' && o.status !== 'Cancelled');
+        renderOrders();
       }
-    }, 3000);
+    }
+
+    document.addEventListener('DOMContentLoaded', () => initAdminCloud());
   </script>
 </body>
 </html>
